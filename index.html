@@ -405,23 +405,35 @@
         <p>Лабораторні роботи №26-30. Пріма, Дейкстра, Беллман-Форд, Флойд-Воршалл.</p>
     </header>
 
-    <div class="workspace-grid" style="grid-template-columns: 1fr;">
+   <div class="workspace-grid" style="grid-template-columns: 1fr;">
         <div class="card">
             <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start;">
-                <div style="flex: 1; min-width: 300px;">
-                    <p class="hint">Матриця ваг (через кому, рядки з нового рядка, 0 = немає ребра):</p>
-                    <textarea id="advGraphMatrix" style="width: 100%; height: 160px; background: #1f2937; color: white; border: 1px solid #374151; padding: 10px; border-radius: 6px; font-family: monospace;">0, 2, 0, 6, 0
-2, 0, 3, 8, 5
-0, 3, 0, 0, 7
-6, 8, 0, 0, 9
-0, 5, 7, 9, 0</textarea>
+                <div style="flex: 1; min-width: 250px;">
+                    <p class="hint">Матриця ваг (0 = немає ребра):</p>
+                    <textarea id="advGraphMatrix" style="width: 100%; height: 160px; background: #1f2937; color: white; border: 1px solid #374151; padding: 10px; border-radius: 6px; font-family: monospace; resize: vertical;">0, 2, 2, 0, 0, 0
+0, 0, 0, 2, 3, 0
+0, 0, 0, 0, 2, 0
+0, 0, 0, 0, 0, 2
+0, 0, 0, 0, 0, 1
+0, 0, 0, 0, 0, 0</textarea>
                 </div>
-                <div>
-                    <p class="hint">Початкова вершина (від 1):</p>
+                
+                <div style="flex: 1; min-width: 150px;">
+                    <p class="hint">Координати X, Y для A* (ЛР 30):</p>
+                    <textarea id="astarCoords" style="width: 100%; height: 160px; background: #1f2937; color: white; border: 1px solid #374151; padding: 10px; border-radius: 6px; font-family: monospace; resize: vertical;">0.0, 3.0
+2.0, 5.0
+2.0, 1.0
+5.0, 5.0
+5.0, 1.0
+8.0, 3.0</textarea>
+                </div>
+
+                <div style="min-width: 150px;">
+                    <p class="hint">Старт (від 1):</p>
                     <input type="number" id="advStartNode" value="1" style="width: 80px; padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151; margin-bottom: 15px;">
                     
-                    <p class="hint">Кінцева вершина (від 1, для Дейкстри):</p>
-                    <input type="number" id="advEndNode" value="5" style="width: 80px; padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151;">
+                    <p class="hint">Ціль (від 1):</p>
+                    <input type="number" id="advEndNode" value="6" style="width: 80px; padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151;">
                 </div>
             </div>
             
@@ -430,8 +442,8 @@
                 <button class="btn btn-secondary" onclick="runDijkstraJS()">Дейкстра (ЛР 27)</button>
                 <button class="btn btn-secondary" onclick="runBellmanFordJS()">Беллман-Форд (ЛР 28)</button>
                 <button class="btn btn-secondary" style="background-color: #8b5cf6;" onclick="runFloydWarshallJS()">Флойд-Воршалл (ЛР 29)</button>
+                <button class="btn btn-primary" style="background-color: #f59e0b;" onclick="runAStarJS()">A* Algorithm (ЛР 30)</button>
             </div>
-            <p class="hint" style="margin-top: 15px;">*Алгоритм A* (ЛР 30) потребує координат вершин, тому його краще виводити окремо або використовувати матрицю як граф.</p>
         </div>
 
         <div class="card console-card">
@@ -439,7 +451,6 @@
             <div class="console-output" id="advGraphConsole" style="min-height: 300px; max-height: 500px;">Очікування запуску...</div>
         </div>
     </div>
-</div>
 
     </main>
 
