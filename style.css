@@ -100,3 +100,32 @@ body {
 .search-cell.mid { border-color: #a855f7; background-color: #a855f7; color: #fff; transform: scale(1.1); z-index: 10; box-shadow: 0 0 10px #a855f7; }
 .search-cell.found { border-color: #10b981; background-color: #10b981; color: #000; transform: scale(1.1); z-index: 10; box-shadow: 0 0 15px #10b981; }
 .search-cell.barrier { border-color: #ef4444; background-color: rgba(239, 68, 68, 0.2); }
+/* ВІЗУАЛІЗАЦІЯ ХЕШ-ТАБЛИЦЬ */
+.hash-headers {
+    display: grid; grid-template-columns: 50px 1fr 1fr; gap: 15px; 
+    padding: 10px; font-weight: bold; color: var(--text-muted); border-bottom: 1px solid var(--border); margin-bottom: 10px;
+}
+.hash-header-col:first-child { grid-column: 2; }
+.hash-container { display: flex; flex-direction: column; gap: 8px; }
+.hash-row { display: grid; grid-template-columns: 50px 1fr 1fr; gap: 15px; align-items: start; }
+
+.hash-index {
+    background: #1f2937; border: 1px solid var(--border); border-radius: 6px;
+    height: 40px; display: flex; align-items: center; justify-content: center; font-weight: bold;
+}
+
+.hash-chain-area { display: flex; gap: 8px; flex-wrap: wrap; min-height: 40px; align-items: center; padding-left: 10px; border-left: 2px dashed #374151; }
+.hash-chain-item {
+    background: rgba(59, 130, 246, 0.2); border: 1px solid #3b82f6; border-radius: 4px;
+    padding: 6px 10px; font-size: 0.85rem; display: flex; gap: 5px;
+}
+.hash-chain-item::after { content: '→'; color: #3b82f6; margin-left: 5px; }
+.hash-chain-item:last-child::after { content: 'NULL'; color: var(--text-muted); }
+
+.hash-open-area {
+    height: 40px; border-radius: 6px; display: flex; align-items: center; padding: 0 15px;
+    font-size: 0.9rem; transition: 0.2s; border: 1px solid var(--border);
+}
+.hash-open-area.free { background: transparent; color: var(--text-muted); }
+.hash-open-area.used { background: rgba(16, 185, 129, 0.2); border-color: #10b981; color: white; }
+.hash-open-area.deleted { background: rgba(239, 68, 68, 0.1); border-color: #ef4444; color: #ef4444; text-decoration: line-through; }
