@@ -17,6 +17,7 @@
             <a href="#" class="menu-item active" onclick="switchLab('lab-graphs')">ЛР 21-23: Графи & Алгоритми</a>
             <a href="#" class="menu-item" onclick="switchLab('lab-sort')">ЛР 1-8: Сортування</a>
             <a href="#" class="menu-item" onclick="switchLab('lab-search')">ЛР 9-10: Пошук</a>
+            <a href="#" class="menu-item" onclick="switchLab('lab-hash')">ЛР 11-12: Хеш-таблиці</a>
         </nav>
     </aside>
 
@@ -152,6 +153,53 @@
                 </div>
             </div>
         </div>
+    <div id="lab-hash" class="lab-section">
+    <header class="section-header">
+        <h2>Хеш-таблиці та колізії</h2>
+        <p>Лабораторні роботи №11-12. Порівняння методу ланцюжків та відкритої адресації (квадратичне пробування).</p>
+    </header>
+
+    <div class="workspace-grid" style="grid-template-columns: 1fr;">
+        <div class="card">
+            <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-end;">
+                <div>
+                    <p class="hint">Ключ (число):</p>
+                    <input type="number" id="hashKey" placeholder="Напр. 42" style="width: 100px; padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151;">
+                </div>
+                <div>
+                    <p class="hint">Значення (текст):</p>
+                    <input type="text" id="hashValue" placeholder="Дані..." style="width: 150px; padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151;">
+                </div>
+                
+                <div class="controls">
+                    <button class="btn btn-primary" onclick="insertHash()">Вставити</button>
+                    <button class="btn btn-secondary" onclick="searchHash()">Знайти</button>
+                    <button class="btn btn-secondary" style="background-color: #ef4444;" onclick="removeHash()">Видалити</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3>Візуалізація таблиць (Розмір: 11)</h3>
+                <span id="collisionCounter" style="background: #ef4444; padding: 4px 10px; border-radius: 4px; font-size: 0.85rem;">Колізій: 0</span>
+            </div>
+            
+            <div class="hash-headers">
+                <div class="hash-header-col">Метод ланцюжків</div>
+                <div class="hash-header-col">Відкрита адресація</div>
+            </div>
+            
+            <div id="hashVisualizer" class="hash-container">
+                </div>
+        </div>
+
+        <div class="card console-card">
+            <h3>Консоль виведення</h3>
+            <div class="console-output" id="hashConsole">Очікування команд...</div>
+        </div>
+    </div>
+</div>
 
     </main>
 
