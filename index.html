@@ -22,6 +22,7 @@
             <a href="#" class="menu-item" onclick="switchLab('lab-stack')">ЛР 15: Стек (Stack)</a>
             <a href="#" class="menu-item" onclick="switchLab('lab-queues')">ЛР 16-17: Черги та Дек</a>
             <a href="#" class="menu-item" onclick="switchLab('lab-trees')">ЛР 18-20: Дерева (Trees)</a>
+            <a href="#" class="menu-item" onclick="switchLab('lab-adv-graphs')">ЛР 26-30: Складні Графи</a>
         </nav>
     </aside>
 
@@ -398,6 +399,47 @@
                 </div>
             </div>
         </div>
+    <div id="lab-adv-graphs" class="lab-section">
+    <header class="section-header">
+        <h2>Складні алгоритми на графах</h2>
+        <p>Лабораторні роботи №26-30. Пріма, Дейкстра, Беллман-Форд, Флойд-Воршалл.</p>
+    </header>
+
+    <div class="workspace-grid" style="grid-template-columns: 1fr;">
+        <div class="card">
+            <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start;">
+                <div style="flex: 1; min-width: 300px;">
+                    <p class="hint">Матриця ваг (через кому, рядки з нового рядка, 0 = немає ребра):</p>
+                    <textarea id="advGraphMatrix" style="width: 100%; height: 160px; background: #1f2937; color: white; border: 1px solid #374151; padding: 10px; border-radius: 6px; font-family: monospace;">0, 2, 0, 6, 0
+2, 0, 3, 8, 5
+0, 3, 0, 0, 7
+6, 8, 0, 0, 9
+0, 5, 7, 9, 0</textarea>
+                </div>
+                <div>
+                    <p class="hint">Початкова вершина (від 1):</p>
+                    <input type="number" id="advStartNode" value="1" style="width: 80px; padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151; margin-bottom: 15px;">
+                    
+                    <p class="hint">Кінцева вершина (від 1, для Дейкстри):</p>
+                    <input type="number" id="advEndNode" value="5" style="width: 80px; padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151;">
+                </div>
+            </div>
+            
+            <div class="controls" style="margin-top: 20px; flex-wrap: wrap;">
+                <button class="btn btn-primary" onclick="runPrimJS()">Пріма (ЛР 26)</button>
+                <button class="btn btn-secondary" onclick="runDijkstraJS()">Дейкстра (ЛР 27)</button>
+                <button class="btn btn-secondary" onclick="runBellmanFordJS()">Беллман-Форд (ЛР 28)</button>
+                <button class="btn btn-secondary" style="background-color: #8b5cf6;" onclick="runFloydWarshallJS()">Флойд-Воршалл (ЛР 29)</button>
+            </div>
+            <p class="hint" style="margin-top: 15px;">*Алгоритм A* (ЛР 30) потребує координат вершин, тому його краще виводити окремо або використовувати матрицю як граф.</p>
+        </div>
+
+        <div class="card console-card">
+            <h3>Консоль виведення алгоритмів</h3>
+            <div class="console-output" id="advGraphConsole" style="min-height: 300px; max-height: 500px;">Очікування запуску...</div>
+        </div>
+    </div>
+</div>
 
     </main>
 
