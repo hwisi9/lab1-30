@@ -1521,8 +1521,77 @@ function runAStarJS() {
         return;
     }
 
-    logAdvGraph(`\n=== ЛР 30: Алгоритм A* (Старт: v${start+1}, Ціль: v${goal+1}) ===`, true);
+    logAdvGraph(`=== ЛР 30: Алгоритм A* (Старт: v${start+1}, Ціль: v${goal+1}) ===`, true);
 
+    let h = new Array(n).fill(0);
+    for (let i = 0; i < n; i++) {
+        let dx = coords[i].x - coords[goal].x;
+        let dy = coords[i].y - coords[goal].y;
+        h[i] = Math.floor(Math.sqrt(dx * dx + dy * dy)); 
+    }
+
+    logAdvGraph("Автоматично обчислені h(v) [Евклідова до цілі]:");
+    for (let i = 0; i < n; i++) {
+        logAdvGraph(`  h(v${i+1}) = ${h[i]}`);
+    }
+    logAdvGraph("-".repeat(50));
+
+    let dist = new Array(n).fill(INF);
+    let parent = new Array(n).fill(-1);
+    let closed = new Array(n).fill(false);
+    dist[start] = 0;
+
+    let processed = 0;
+    let found = false;
+    let pq = [{ v: start, f: h[start] }];
+
+    while (pq.length > 0) {
+        pq.sort((a, b) => a.f - b.f);
+        let current = pq.shift();
+        let u = current.v;
+
+        if (closed[u]) continue;
+        closed[u] = true;
+        processed++;
+
+        if (u === goal) {
+            found = true;
+            break;
+        }
+
+        for (let v = 0; v < n; v++) {
+            let weight = g[u][v];
+            if (weight !== 0 && !closed[v]) {
+                if (dist[u] + weight < dist[v]) {
+                    dist[v] = dist[u] + weight;
+                    parent[v] = u;
+                    pq.push({ v: v, f: dist[v] + h[v] });
+                }
+            }
+        }
+    }
+
+    if (found) {
+        let path = [];
+        for (let v = goal; v !== -1; v = parent[v]) path.push(v + 1);
+        path.reverse();
+
+        logAdvGraph(`[+] Шлях знайдено!`);
+        logAdvGraph(`    Довжина шляху: ${dist[goal]}`);
+        logAdvGraph(`    Оброблено вершин: ${processed}`);
+        logAdvGraph(`    Маршрут: ${path.join(' → ')}`);
+        
+        logAdvGraph(`\nСхема маршруту:`);
+        for (let i = 0; i < path.length - 1; i++) {
+            let u = path[i] - 1;
+            let v = path[i+1] - 1;
+            let w = g[u][v];
+            logAdvGraph(`  [v${u+1}](${coords[u].x}, ${coords[u].y}) --${w}--> [v${v+1}](${coords[v].x}, ${coords[v].y})`);
+        }
+    } else {
+        logAdvGraph(`[-] Шлях до цільової вершини v${goal+1} не знайдено.`);
+    }
+}
     // 1. Обчислення евристики (Евклідова відстань до цілі)
     let h = new Array(n).fill(0);
     for (let i = 0; i < n; i++) {
