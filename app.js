@@ -5,7 +5,9 @@ function switchLab(labId) {
     document.querySelectorAll('.lab-section').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
     document.getElementById(labId).classList.add('active');
-    event.currentTarget.classList.add('active');
+    if (event && event.currentTarget) {
+        event.currentTarget.classList.add('active');
+    }
 }
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -62,7 +64,8 @@ function getMatrix() {
     for (let i = 0; i < GRAPH_SIZE; i++) {
         matrix.push([]);
         for (let j = 0; j < GRAPH_SIZE; j++) {
-            const val = parseInt(document.getElementById(`m_${i}_${j}`).value) || 0;
+            const el = document.getElementById(`m_${i}_${j}`);
+            const val = el ? parseInt(el.value) || 0 : 0;
             matrix[i].push(val);
         }
     }
@@ -714,27 +717,28 @@ function drawLists() {
     const container = document.getElementById('listVisualizer');
     const hint = document.getElementById('listRulesHint');
     const btnReverse = document.getElementById('btnReverse');
+    if (!container) return;
     container.innerHTML = '';
 
     if (type === 'singly') {
-        hint.innerText = "Правило: Додає в початок. Видаляє за значенням. Можна реверсувати.";
-        btnReverse.disabled = false;
+        if (hint) hint.innerText = "Правило: Додає в початок. Видаляє за значенням. Можна реверсувати.";
+        if (btnReverse) btnReverse.disabled = false;
         container.innerHTML += `<span class="list-head-label">[Head]</span> <div class="list-arrow">→</div>`;
         sList.forEach(val => {
             container.innerHTML += `<div class="list-node">[${val}]</div> <div class="list-arrow">→</div>`;
         });
         container.innerHTML += `<div class="list-null">NULL</div>`;
     } else if (type === 'doubly') {
-        hint.innerText = "Правило: Додає в кінець. Видаляє перший елемент (Head).";
-        btnReverse.disabled = true;
+        if (hint) hint.innerText = "Правило: Додає в кінець. Видаляє перший елемент (Head).";
+        if (btnReverse) btnReverse.disabled = true;
         container.innerHTML += `<div class="list-null">NULL</div> <div class="list-arrow">⇔</div>`;
         dList.forEach(val => {
             container.innerHTML += `<div class="list-node">[${val}]</div> <div class="list-arrow">⇔</div>`;
         });
         container.innerHTML += `<div class="list-null">NULL</div>`;
     } else if (type === 'circular') {
-        hint.innerText = "Правило: Додає в кінець. Вказує на Head.";
-        btnReverse.disabled = true;
+        if (hint) hint.innerText = "Правило: Додає в кінець. Вказує на Head.";
+        if (btnReverse) btnReverse.disabled = true;
         if (cList.length === 0) {
             container.innerHTML += `<div class="list-null">Список порожній</div>`;
         } else {
@@ -753,7 +757,7 @@ function listInsert() {
 
     if (type === 'singly') {
         sList.unshift(val); 
-        logList(`[Однозв'язний] Додано [${val}] на початок. Всього: ${sList.length}`);
+        logList(`[Послідовний список] Додано [${val}] на початок. Всього: ${sList.length}`);
     } else if (type === 'doubly') {
         dList.push(val); 
         logList(`[Двозв'язний] Додано [${val}] в кінець.`);
@@ -772,9 +776,9 @@ function listDelete() {
         const index = sList.indexOf(val);
         if (index !== -1) {
             sList.splice(index, 1);
-            logList(`[Однозв'язний] Перше входження [${val}] видалено.`);
+            logList(`[Послідовний список] Перше входження [${val}] видалено.`);
         } else {
-            logList(`[Однозв'язний] Елемент [${val}] не знайдено!`);
+            logList(`[Послідовний список] Елемент [${val}] не знайдено!`);
         }
     } else if (type === 'doubly') {
         if (dList.length > 0) {
@@ -798,13 +802,13 @@ function listReverse() {
     const type = document.getElementById('listType').value;
     if (type === 'singly') {
         sList.reverse();
-        logList(`[Однозв'язний] Вказівники успішно перевернуто (Реверс).`);
+        logList(`[Послідовний список] Вказівники успішно перевернуто (Реверс).`);
         drawLists();
     }
 }
 
 // ==========================================
-// ЛР 15: СТЕК (STACK) - ПОВНА РЕАЛІЗАЦІЯ
+// ЛР 15: СТЕК (STACK)
 // ==========================================
 let stackData = [];
 
@@ -901,10 +905,15 @@ function drawQueue() {
     if(!typeEl) return;
     const type = typeEl.value;
     const container = document.getElementById('queueVisualizer');
+    if (!container) return;
     
-    document.getElementById('priorityInputDiv').style.display = (type === 'priority') ? 'block' : 'none';
-    document.getElementById('qControlsStandard').style.display = (type === 'deque') ? 'none' : 'flex';
-    document.getElementById('qControlsDeque').style.display = (type === 'deque') ? 'flex' : 'none';
+    const pInput = document.getElementById('priorityInputDiv');
+    const qStd = document.getElementById('qControlsStandard');
+    const qDq = document.getElementById('qControlsDeque');
+    
+    if (pInput) pInput.style.display = (type === 'priority') ? 'block' : 'none';
+    if (qStd) qStd.style.display = (type === 'deque') ? 'none' : 'flex';
+    if (qDq) qDq.style.display = (type === 'deque') ? 'flex' : 'none';
 
     container.innerHTML = '';
     if (queueData.length === 0) { container.innerHTML = '<span style="color:gray;">Порожньо</span>'; return; }
@@ -964,25 +973,31 @@ function logTree(text, clear = false) {
 
 function updateTreeUI() {
     const type = document.getElementById('treeType').value;
+    const numDiv = document.getElementById('treeNumInputDiv');
+    const strDiv = document.getElementById('treeStrInputDiv');
+    const cNum = document.getElementById('treeControlsNum');
+    const cStr = document.getElementById('treeControlsStr');
+    const extra = document.getElementById('treeExtraControls');
+    const hr = document.getElementById('treeHr');
+
     if (type === 'trie') {
-        document.getElementById('treeNumInputDiv').style.display = 'none';
-        document.getElementById('treeStrInputDiv').style.display = 'block';
-        document.getElementById('treeControlsNum').style.display = 'none';
-        document.getElementById('treeControlsStr').style.display = 'flex';
-        document.getElementById('treeExtraControls').style.display = 'none';
-        document.getElementById('treeHr').style.display = 'none';
+        if (numDiv) numDiv.style.display = 'none';
+        if (strDiv) strDiv.style.display = 'block';
+        if (cNum) cNum.style.display = 'none';
+        if (cStr) cStr.style.display = 'flex';
+        if (extra) extra.style.display = 'none';
+        if (hr) hr.style.display = 'none';
     } else {
-        document.getElementById('treeNumInputDiv').style.display = 'block';
-        document.getElementById('treeStrInputDiv').style.display = 'none';
-        document.getElementById('treeControlsNum').style.display = 'flex';
-        document.getElementById('treeControlsStr').style.display = 'none';
-        document.getElementById('treeExtraControls').style.display = 'flex';
-        document.getElementById('treeHr').style.display = 'block';
+        if (numDiv) numDiv.style.display = 'block';
+        if (strDiv) strDiv.style.display = 'none';
+        if (cNum) cNum.style.display = 'flex';
+        if (cStr) cStr.style.display = 'none';
+        if (extra) extra.style.display = 'flex';
+        if (hr) hr.style.display = 'block';
     }
     drawTreeCanvas();
 }
 
-// --- BST Логіка ---
 function insertBST(node, val) {
     if (!node) return new TreeNode(val);
     if (val < node.val) node.left = insertBST(node.left, val);
@@ -1013,7 +1028,6 @@ function removeBST(node, val) {
     return node;
 }
 
-// --- AVL Логіка ---
 function getHeight(node) { return node ? node.height : 0; }
 function getBalance(node) { return node ? getHeight(node.left) - getHeight(node.right) : 0; }
 function rightRotate(y) {
@@ -1072,7 +1086,6 @@ function removeAVL(node, val) {
     return node;
 }
 
-// --- Спільні функції числових дерев ---
 function treeInsert() {
     const type = document.getElementById('treeType').value;
     const val = parseInt(document.getElementById('treeValue').value);
@@ -1122,7 +1135,6 @@ function treeTraverse(order) {
     logTree(`[${order.toUpperCase()} Обхід]: ${traverseRes.join(' -> ')}`);
 }
 
-// --- Trie Логіка ---
 function sanitizeWord(w) { return w.toLowerCase().replace(/[^a-z]/g, ''); }
 
 function trieInsertWord() {
@@ -1190,7 +1202,6 @@ function trieDeleteWord() {
     drawTreeCanvas();
 }
 
-// --- Малювання на Canvas ---
 function calcTreeDepth(node) {
     return node ? 1 + Math.max(calcTreeDepth(node.left), calcTreeDepth(node.right)) : 0;
 }
@@ -1262,10 +1273,10 @@ function drawTrieNode(ctx, node, x, y, dx, charLabel) {
         drawTrieNode(ctx, node.children[keys[i]], childX, childY, dx / 1.8, keys[i]);
     }
 }
+
 // ==========================================
 // ЛР 26-30: СКЛАДНІ АЛГОРИТМИ НА ГРАФАХ
 // ==========================================
-
 const INF = 1000000000;
 
 function logAdvGraph(text, clear = false) {
@@ -1285,6 +1296,15 @@ function parseGraphMatrix() {
             return isNaN(v) ? 0 : v;
         })
     );
+}
+
+function parseCoords() {
+    const raw = document.getElementById('astarCoords').value.trim();
+    if (!raw) return [];
+    return raw.split('\n').map(row => {
+        let parts = row.split(',').map(v => parseFloat(v.trim()));
+        return { x: parts[0] || 0, y: parts[1] || 0 };
+    });
 }
 
 function runPrimJS() {
@@ -1493,17 +1513,7 @@ function runFloydWarshallJS() {
         logAdvGraph(rowStr);
     }
 }
-// --- Зчитування координат ---
-function parseCoords() {
-    const raw = document.getElementById('astarCoords').value.trim();
-    if (!raw) return [];
-    return raw.split('\n').map(row => {
-        let parts = row.split(',').map(v => parseFloat(v.trim()));
-        return { x: parts[0] || 0, y: parts[1] || 0 };
-    });
-}
 
-// --- ЛР 30: Алгоритм A* ---
 function runAStarJS() {
     const g = parseGraphMatrix();
     const coords = parseCoords();
@@ -1571,84 +1581,6 @@ function runAStarJS() {
         }
     }
 
-    if (found) {
-        let path = [];
-        for (let v = goal; v !== -1; v = parent[v]) path.push(v + 1);
-        path.reverse();
-
-        logAdvGraph(`[+] Шлях знайдено!`);
-        logAdvGraph(`    Довжина шляху: ${dist[goal]}`);
-        logAdvGraph(`    Оброблено вершин: ${processed}`);
-        logAdvGraph(`    Маршрут: ${path.join(' → ')}`);
-        
-        logAdvGraph(`\nСхема маршруту:`);
-        for (let i = 0; i < path.length - 1; i++) {
-            let u = path[i] - 1;
-            let v = path[i+1] - 1;
-            let w = g[u][v];
-            logAdvGraph(`  [v${u+1}](${coords[u].x}, ${coords[u].y}) --${w}--> [v${v+1}](${coords[v].x}, ${coords[v].y})`);
-        }
-    } else {
-        logAdvGraph(`[-] Шлях до цільової вершини v${goal+1} не знайдено.`);
-    }
-}
-    // 1. Обчислення евристики (Евклідова відстань до цілі)
-    let h = new Array(n).fill(0);
-    for (let i = 0; i < n; i++) {
-        let dx = coords[i].x - coords[goal].x;
-        let dy = coords[i].y - coords[goal].y;
-        h[i] = Math.floor(Math.sqrt(dx * dx + dy * dy)); 
-    }
-
-    logAdvGraph("Автоматично обчислені h(v) [Евклідова до цілі]:");
-    for (let i = 0; i < n; i++) {
-        logAdvGraph(`  h(v${i+1}) = ${h[i]}`);
-    }
-    logAdvGraph("-".repeat(50));
-
-    // 2. Ініціалізація структур A*
-    let dist = new Array(n).fill(INF);
-    let parent = new Array(n).fill(-1);
-    let closed = new Array(n).fill(false);
-    dist[start] = 0;
-
-    let processed = 0;
-    let found = false;
-
-    // Черга з пріоритетом (спрощена через масив, бо n мале)
-    // f = dist + h
-    let pq = [{ v: start, f: h[start] }];
-
-    // 3. Основний цикл A*
-    while (pq.length > 0) {
-        // Сортуємо, щоб перший елемент мав найменший f
-        pq.sort((a, b) => a.f - b.f);
-        let current = pq.shift();
-        let u = current.v;
-
-        if (closed[u]) continue;
-        closed[u] = true;
-        processed++;
-
-        if (u === goal) {
-            found = true;
-            break;
-        }
-
-        // Перевірка сусідів
-        for (let v = 0; v < n; v++) {
-            let weight = g[u][v];
-            if (weight !== 0 && !closed[v]) {
-                if (dist[u] + weight < dist[v]) {
-                    dist[v] = dist[u] + weight;
-                    parent[v] = u;
-                    pq.push({ v: v, f: dist[v] + h[v] });
-                }
-            }
-        }
-    }
-
-    // 4. Виведення результатів
     if (found) {
         let path = [];
         for (let v = goal; v !== -1; v = parent[v]) path.push(v + 1);
