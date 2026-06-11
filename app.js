@@ -941,7 +941,7 @@ function dqPopFront() { if(queueData.length===0) return; queueData.shift(); draw
 function dqPopBack() { if(queueData.length===0) return; queueData.pop(); drawQueue(); }
 
 // ==========================================
-// ЛР 18-20: ДЕРЕВА (BST ТА AVL)
+// ЛР 18-20: ДЕРЕВА (BST, AVL, TRIE)
 // ==========================================
 class TreeNode {
     constructor(val) { this.val = val; this.left = null; this.right = null; this.height = 1; }
@@ -949,7 +949,37 @@ class TreeNode {
 
 let bstRoot = null;
 let avlRoot = null;
+let trieRoot = { children: {}, isEndOfWord: false };
 
+function logTree(text, clear = false) {
+    const consoleDiv = document.getElementById('treeConsole');
+    if (!consoleDiv) return;
+    if (clear) consoleDiv.innerHTML = '';
+    consoleDiv.innerHTML += text + '\n';
+    consoleDiv.scrollTop = consoleDiv.scrollHeight;
+}
+
+function updateTreeUI() {
+    const type = document.getElementById('treeType').value;
+    if (type === 'trie') {
+        document.getElementById('treeNumInputDiv').style.display = 'none';
+        document.getElementById('treeStrInputDiv').style.display = 'block';
+        document.getElementById('treeControlsNum').style.display = 'none';
+        document.getElementById('treeControlsStr').style.display = 'flex';
+        document.getElementById('treeExtraControls').style.display = 'none';
+        document.getElementById('treeHr').style.display = 'none';
+    } else {
+        document.getElementById('treeNumInputDiv').style.display = 'block';
+        document.getElementById('treeStrInputDiv').style.display = 'none';
+        document.getElementById('treeControlsNum').style.display = 'flex';
+        document.getElementById('treeControlsStr').style.display = 'none';
+        document.getElementById('treeExtraControls').style.display = 'flex';
+        document.getElementById('treeHr').style.display = 'block';
+    }
+    drawTreeCanvas();
+}
+
+// --- BST Логіка ---
 function insertBST(node, val) {
     if (!node) return new TreeNode(val);
     if (val < node.val) node.left = insertBST(node.left, val);
@@ -957,6 +987,30 @@ function insertBST(node, val) {
     return node;
 }
 
+function findMinNode(node) {
+    while (node && node.left) node = node.left;
+    return node;
+}
+function findMaxNode(node) {
+    while (node && node.right) node = node.right;
+    return node;
+}
+
+function removeBST(node, val) {
+    if (!node) return null;
+    if (val < node.val) node.left = removeBST(node.left, val);
+    else if (val > node.val) node.right = removeBST(node.right, val);
+    else {
+        if (!node.left) return node.right;
+        if (!node.right) return node.left;
+        let temp = findMinNode(node.right);
+        node.val = temp.val;
+        node.right = removeBST(node.right, temp.val);
+    }
+    return node;
+}
+
+// --- AVL Логіка ---
 function getHeight(node) { return node ? node.height : 0; }
 function getBalance(node) { return node ? getHeight(node.left) - getHeight(node.right) : 0; }
 function rightRotate(y) {
@@ -973,6 +1027,7 @@ function leftRotate(x) {
     y.height = Math.max(getHeight(y.left), getHeight(y.right)) + 1;
     return y;
 }
+
 function insertAVL(node, val) {
     if (!node) return new TreeNode(val);
     if (val < node.val) node.left = insertAVL(node.left, val);
@@ -989,38 +1044,203 @@ function insertAVL(node, val) {
     return node;
 }
 
+function removeAVL(node, val) {
+    if (!node) return null;
+    if (val < node.val) node.left = removeAVL(node.left, val);
+    else if (val > node.val) node.right = removeAVL(node.right, val);
+    else {
+        if (!node.left || !node.right) {
+            node = node.left ? node.left : node.right;
+        } else {
+            let temp = findMinNode(node.right);
+            node.val = temp.val;
+            node.right = removeAVL(node.right, temp.val);
+        }
+    }
+    if (!node) return node;
+
+    node.height = 1 + Math.max(getHeight(node.left), getHeight(node.right));
+    let balance = getBalance(node);
+
+    if (balance > 1 && getBalance(node.left) >= 0) return rightRotate(node);
+    if (balance > 1 && getBalance(node.left) < 0) { node.left = leftRotate(node.left); return rightRotate(node); }
+    if (balance < -1 && getBalance(node.right) <= 0) return leftRotate(node);
+    if (balance < -1 && getBalance(node.right) > 0) { node.right = rightRotate(node.right); return leftRotate(node); }
+    return node;
+}
+
+// --- Спільні функції числових дерев ---
 function treeInsert() {
     const type = document.getElementById('treeType').value;
-    const val = parseInt(document.getElementById('treeValue').value) || 0;
-    if (type === 'bst') bstRoot = insertBST(bstRoot, val);
-    else avlRoot = insertAVL(avlRoot, val);
+    const val = parseInt(document.getElementById('treeValue').value);
+    if (isNaN(val)) return;
+    if (type === 'bst') { bstRoot = insertBST(bstRoot, val); logTree(`[BST] Додано вузол ${val}`); }
+    else { avlRoot = insertAVL(avlRoot, val); logTree(`[AVL] Додано вузол ${val} (виконано балансування якщо треба)`); }
     drawTreeCanvas();
 }
 
+function treeDelete() {
+    const type = document.getElementById('treeType').value;
+    const val = parseInt(document.getElementById('treeValue').value);
+    if (isNaN(val)) return;
+    if (type === 'bst') { bstRoot = removeBST(bstRoot, val); logTree(`[BST] Спроба видалення вузла ${val}`); }
+    else { avlRoot = removeAVL(avlRoot, val); logTree(`[AVL] Спроба видалення вузла ${val}`); }
+    drawTreeCanvas();
+}
+
+function treeMinMax() {
+    const type = document.getElementById('treeType').value;
+    const root = type === 'bst' ? bstRoot : avlRoot;
+    if (!root) { logTree("[-] Дерево порожнє."); return; }
+    logTree(`[i] Мінімум: ${findMinNode(root).val} | Максимум: ${findMaxNode(root).val}`);
+}
+
+function countNodes(node) { return node ? 1 + countNodes(node.left) + countNodes(node.right) : 0; }
+function calcHeight(node) { return node ? 1 + Math.max(calcHeight(node.left), calcHeight(node.right)) : 0; }
+
+function treeStats() {
+    const type = document.getElementById('treeType').value;
+    const root = type === 'bst' ? bstRoot : avlRoot;
+    logTree(`[i] Статистика: Висота = ${calcHeight(root)}, Кількість вузлів = ${countNodes(root)}`);
+}
+
+let traverseRes = [];
+function inOrder(node) { if(node) { inOrder(node.left); traverseRes.push(node.val); inOrder(node.right); } }
+function preOrder(node) { if(node) { traverseRes.push(node.val); preOrder(node.left); preOrder(node.right); } }
+function postOrder(node) { if(node) { postOrder(node.left); postOrder(node.right); traverseRes.push(node.val); } }
+
+function treeTraverse(order) {
+    const type = document.getElementById('treeType').value;
+    const root = type === 'bst' ? bstRoot : avlRoot;
+    traverseRes = [];
+    if (order === 'in') inOrder(root);
+    else if (order === 'pre') preOrder(root);
+    else postOrder(root);
+    logTree(`[${order.toUpperCase()} Обхід]: ${traverseRes.join(' -> ')}`);
+}
+
+// --- Trie Логіка ---
+function sanitizeWord(w) { return w.toLowerCase().replace(/[^a-z]/g, ''); }
+
+function trieInsertWord() {
+    let word = sanitizeWord(document.getElementById('treeStrValue').value);
+    if (!word) { logTree("[-] Введіть слово (лише латинські літери)"); return; }
+    let curr = trieRoot;
+    for (let char of word) {
+        if (!curr.children[char]) curr.children[char] = { children: {}, isEndOfWord: false };
+        curr = curr.children[char];
+    }
+    curr.isEndOfWord = true;
+    logTree(`[Trie] Слово "${word}" додано.`);
+    drawTreeCanvas();
+}
+
+function trieSearchWord() {
+    let word = sanitizeWord(document.getElementById('treeStrValue').value);
+    if (!word) return;
+    let curr = trieRoot;
+    for (let char of word) {
+        if (!curr.children[char]) { logTree(`[Trie] Слово "${word}" НЕ знайдено.`); return; }
+        curr = curr.children[char];
+    }
+    if (curr.isEndOfWord) logTree(`[Trie] Слово "${word}" ЗНАЙДЕНО!`);
+    else logTree(`[Trie] Слово "${word}" НЕ знайдено (є лише такий префікс).`);
+}
+
+function countWordsInTrie(node) {
+    if (!node) return 0;
+    let count = node.isEndOfWord ? 1 : 0;
+    for (let char in node.children) count += countWordsInTrie(node.children[char]);
+    return count;
+}
+
+function trieCountPrefix() {
+    let prefix = sanitizeWord(document.getElementById('treeStrValue').value);
+    if (!prefix) return;
+    let curr = trieRoot;
+    for (let char of prefix) {
+        if (!curr.children[char]) { logTree(`[Trie] Слів з префіксом "${prefix}": 0`); return; }
+        curr = curr.children[char];
+    }
+    logTree(`[Trie] Слів з префіксом "${prefix}": ${countWordsInTrie(curr)}`);
+}
+
+function removeTrieWord(node, word, depth) {
+    if (!node) return false;
+    if (depth === word.length) {
+        if (node.isEndOfWord) node.isEndOfWord = false;
+        return Object.keys(node.children).length === 0;
+    }
+    let char = word[depth];
+    if (removeTrieWord(node.children[char], word, depth + 1)) {
+        delete node.children[char];
+        return !node.isEndOfWord && Object.keys(node.children).length === 0;
+    }
+    return false;
+}
+
+function trieDeleteWord() {
+    let word = sanitizeWord(document.getElementById('treeStrValue').value);
+    if (!word) return;
+    removeTrieWord(trieRoot, word, 0);
+    logTree(`[Trie] Спроба видалення слова "${word}".`);
+    drawTreeCanvas();
+}
+
+// --- Малювання на Canvas ---
 function drawTreeCanvas() {
     const canvas = document.getElementById('treeCanvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     const type = document.getElementById('treeType').value;
-    const root = type === 'bst' ? bstRoot : avlRoot;
-    if (root) drawNode(ctx, root, canvas.width / 2, 40, canvas.width / 4);
+    
+    if (type === 'trie') {
+        drawTrieNode(ctx, trieRoot, canvas.width / 2, 30, canvas.width / 4, '*');
+    } else {
+        const root = type === 'bst' ? bstRoot : avlRoot;
+        if (root) drawBinaryNode(ctx, root, canvas.width / 2, 40, canvas.width / 4, type);
+    }
 }
 
-function drawNode(ctx, node, x, y, dx) {
+function drawBinaryNode(ctx, node, x, y, dx, type) {
     if (!node) return;
     ctx.strokeStyle = '#4b5563'; ctx.lineWidth = 2;
     if (node.left) {
         ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x - dx, y + 60); ctx.stroke();
-        drawNode(ctx, node.left, x - dx, y + 60, dx / 1.8);
+        drawBinaryNode(ctx, node.left, x - dx, y + 60, dx / 1.8, type);
     }
     if (node.right) {
         ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + dx, y + 60); ctx.stroke();
-        drawNode(ctx, node.right, x + dx, y + 60, dx / 1.8);
+        drawBinaryNode(ctx, node.right, x + dx, y + 60, dx / 1.8, type);
     }
     ctx.beginPath(); ctx.arc(x, y, 20, 0, 2 * Math.PI);
-    ctx.fillStyle = document.getElementById('treeType').value === 'avl' ? '#8b5cf6' : '#3b82f6';
+    ctx.fillStyle = type === 'avl' ? '#8b5cf6' : '#3b82f6';
     ctx.fill(); ctx.stroke();
     ctx.fillStyle = 'white'; ctx.font = 'bold 14px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.fillText(node.val, x, y);
+}
+
+function drawTrieNode(ctx, node, x, y, dx, charLabel) {
+    if (!node) return;
+    
+    // Якщо це корінь, малюємо його сірим і меншим
+    ctx.beginPath(); ctx.arc(x, y, charLabel === '*' ? 15 : 18, 0, 2 * Math.PI);
+    ctx.fillStyle = node.isEndOfWord ? '#10b981' : '#374151'; // Зелений, якщо кінець слова
+    ctx.fill(); ctx.strokeStyle = '#9ca3af'; ctx.lineWidth = 2; ctx.stroke();
+    
+    ctx.fillStyle = 'white'; ctx.font = 'bold 16px monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(charLabel.toUpperCase(), x, y);
+
+    let keys = Object.keys(node.children);
+    let n = keys.length;
+    if (n === 0) return;
+    
+    let startX = x - (dx * (n - 1)) / 2;
+    for (let i = 0; i < n; i++) {
+        let childX = startX + i * dx;
+        let childY = y + 60;
+        ctx.beginPath(); ctx.moveTo(x, y + 18); ctx.lineTo(childX, childY - 18); ctx.strokeStyle = '#4b5563'; ctx.stroke();
+        drawTrieNode(ctx, node.children[keys[i]], childX, childY, dx / 1.5, keys[i]);
+    }
 }
