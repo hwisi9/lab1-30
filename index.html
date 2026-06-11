@@ -18,6 +18,7 @@
             <a href="#" class="menu-item" onclick="switchLab('lab-sort')">ЛР 1-8: Сортування</a>
             <a href="#" class="menu-item" onclick="switchLab('lab-search')">ЛР 9-10: Пошук</a>
             <a href="#" class="menu-item" onclick="switchLab('lab-hash')">ЛР 11-12: Хеш-таблиці</a>
+            <a href="#" class="menu-item" onclick="switchLab('lab-lists')">ЛР 13-14: Зв'язні списки</a>
         </nav>
     </aside>
 
@@ -197,6 +198,49 @@
         <div class="card console-card">
             <h3>Консоль виведення</h3>
             <div class="console-output" id="hashConsole">Очікування команд...</div>
+        </div>
+    </div>
+</div>
+<div id="lab-lists" class="lab-section">
+    <header class="section-header">
+        <h2>Робота зі зв'язними списками</h2>
+        <p>Лабораторні роботи №13-14. Однозв'язний, двозв'язний та кільцевий списки.</p>
+    </header>
+
+    <div class="workspace-grid" style="grid-template-columns: 1fr;">
+        <div class="card">
+            <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-end;">
+                <div>
+                    <p class="hint">Тип списку:</p>
+                    <select id="listType" style="padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151;" onchange="drawLists()">
+                        <option value="singly">Однозв'язний (ЛР 13)</option>
+                        <option value="doubly">Двозв'язний (ЛР 14)</option>
+                        <option value="circular">Кільцевий (ЛР 14)</option>
+                    </select>
+                </div>
+                <div>
+                    <p class="hint">Значення:</p>
+                    <input type="number" id="listValue" placeholder="Напр. 10" style="width: 100px; padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151;">
+                </div>
+                
+                <div class="controls">
+                    <button class="btn btn-primary" onclick="listInsert()">Додати вузол</button>
+                    <button class="btn btn-secondary" style="background-color: #ef4444;" onclick="listDelete()">Видалити</button>
+                    <button class="btn btn-secondary" style="background-color: #8b5cf6;" onclick="listReverse()" id="btnReverse">Реверс (Тільки однозв.)</button>
+                </div>
+            </div>
+            <p class="hint" style="margin-top: 15px; color: #60a5fa;" id="listRulesHint">Правило: Однозв'язний додає в початок. Видалення за значенням.</p>
+        </div>
+
+        <div class="card">
+            <h3>Візуалізація структури</h3>
+            <div id="listVisualizer" class="list-container">
+                </div>
+        </div>
+
+        <div class="card console-card">
+            <h3>Консоль виведення програми</h3>
+            <div class="console-output" id="listConsole">Створіть перший вузол...</div>
         </div>
     </div>
 </div>
