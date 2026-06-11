@@ -112,3 +112,48 @@
     <script src="app.js"></script>
 </body>
 </html>
+<a href="#" class="menu-item" onclick="switchLab('lab-search')">ЛР 9-10: Пошук</a>
+<div id="lab-search" class="lab-section">
+    <header class="section-header">
+        <h2>Алгоритми пошуку в масиві</h2>
+        <p>Лабораторні роботи №9 та №10. Візуалізація лінійного та бінарного пошуку.</p>
+    </header>
+
+    <div class="workspace-grid" style="grid-template-columns: 1fr;">
+        <div class="card">
+            <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-end;">
+                <div>
+                    <p class="hint">Шукане число:</p>
+                    <input type="number" id="searchTarget" value="42" style="width: 80px; padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151;">
+                </div>
+                <div class="controls">
+                    <button class="btn btn-secondary" onclick="generateSearchArray()">Новий масив</button>
+                    <button class="btn btn-secondary" onclick="sortSearchArray()">Відсортувати (ЛР10)</button>
+                </div>
+                <div class="controls" style="margin-left: auto;">
+                    <button class="btn btn-primary" onclick="runLinearSearch()">Лінійний (ЛР9)</button>
+                    <button class="btn btn-primary" onclick="runBarrierSearch()">З бар'єром (ЛР9)</button>
+                    <button class="btn btn-primary" style="background-color: #8b5cf6;" onclick="runBinarySearch()">Бінарний (ЛР10)</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Візуалізація масиву</h3>
+            <div id="searchVisualizer" class="search-container"></div>
+            
+            <div class="legend" style="justify-content: center; margin-top: 20px;">
+                <span class="legend-item"><span class="dot" style="background: #3b82f6;"></span> Активна зона</span>
+                <span class="legend-item"><span class="dot" style="background: #f59e0b;"></span> Поточний крок</span>
+                <span class="legend-item"><span class="dot" style="background: #a855f7;"></span> Середина (Mid)</span>
+                <span class="legend-item"><span class="dot" style="background: #10b981;"></span> Знайдено</span>
+                <span class="legend-item"><span class="dot" style="background: #ef4444;"></span> Бар'єр</span>
+            </div>
+        </div>
+
+        <div class="card console-card">
+            <h3>Консоль виведення програми</h3>
+            <div class="console-output" id="searchConsole">Оберіть дію для запуску алгоритмів пошуку...</div>
+        </div>
+    </div>
+</div>
