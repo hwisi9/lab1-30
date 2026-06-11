@@ -129,3 +129,20 @@ body {
 .hash-open-area.free { background: transparent; color: var(--text-muted); }
 .hash-open-area.used { background: rgba(16, 185, 129, 0.2); border-color: #10b981; color: white; }
 .hash-open-area.deleted { background: rgba(239, 68, 68, 0.1); border-color: #ef4444; color: #ef4444; text-decoration: line-through; }
+/* ВІЗУАЛІЗАЦІЯ ЗВ'ЯЗНИХ СПИСКІВ */
+.list-container {
+    display: flex; align-items: center; flex-wrap: wrap; gap: 10px;
+    padding: 20px; background: #0b0f19; border: 1px solid var(--border);
+    border-radius: 8px; min-height: 100px; font-family: monospace; font-size: 1.1rem;
+}
+.list-node {
+    background: #3b82f6; color: white; padding: 10px 15px;
+    border-radius: 6px; border: 2px solid #2563eb; font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3); transition: 0.3s;
+}
+.list-arrow { color: #9ca3af; font-weight: bold; display: flex; align-items: center; }
+.list-null {
+    background: #1f2937; color: #9ca3af; padding: 10px 15px;
+    border-radius: 6px; border: 2px dashed #374151;
+}
+.list-head-label { color: #10b981; font-weight: bold; margin-right: 5px; }
