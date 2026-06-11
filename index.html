@@ -10,52 +10,36 @@
     <header class="header">
         <div class="container">
             <h1>Марк Гапяк</h1>
-            <p>Студент групи ІПЗ-22 | Збірник лабораторних робіт</p>
+            <p>Група ІПЗ-22 | Інтерактивні лабораторні роботи з графів</p>
         </div>
     </header>
 
     <main class="container">
-        <section class="labs-grid">
-            <article class="lab-card">
-                <h2>Лабораторна 21</h2>
-                <p>Аналіз графів: матриці суміжності, перевірка зв'язності, підрахунок степенів вершин.</p>
-                <div class="tags">
-                    <span>C++</span>
-                    <span>Графи</span>
+        <section class="lab-card json-input-section">
+            <h2>Введення матриці суміжності (5x5)</h2>
+            <p>Змінюй числа в полях, щоб перебудувати граф:</p>
+            
+            <div class="matrix-container" id="matrixInputs">
                 </div>
-                <div class="links">
-                    <a href="https://github.com/твоє-посилання" target="_blank" class="btn">Код (GitHub)</a>
-                </div>
-            </article>
 
-            <article class="lab-card">
-                <h2>Лабораторна 22</h2>
-                <p>Обхід графа в глибину (DFS) з візуалізацією кроків та стеку викликів.</p>
-                <div class="tags">
-                    <span>C++</span>
-                    <span>DFS</span>
-                </div>
-                <div class="links">
-                    <a href="https://github.com/твоє-посилання" target="_blank" class="btn">Код (GitHub)</a>
-                </div>
-            </article>
+            <div class="controls">
+                <button class="btn" onclick="analyzeGraph()">1. Аналізувати граф (ЛР21)</button>
+                <button class="btn btn-accent" onclick="runDFS()">2. Запустити DFS (ЛР22)</button>
+            </div>
+        </section>
 
-            <article class="lab-card">
-                <h2>Лабораторна 23</h2>
-                <p>Обхід графа в ширину (BFS) з використанням черги та візуалізацією.</p>
-                <div class="tags">
-                    <span>C++</span>
-                    <span>BFS</span>
-                </div>
-                <div class="links">
-                    <a href="https://github.com/твоє-посилання" target="_blank" class="btn">Код (GitHub)</a>
-                </div>
-            </article>
+        <section class="lab-card console-section">
+            <h2>Консоль виведення програми</h2>
+            <div class="console-output" id="consoleOutput">
+                Тут з'явиться результат роботи алгоритмів...
+            </div>
         </section>
     </main>
 
     <footer class="footer">
-        <p>&copy; 2026 Марк Гапяк. Всі права захищені (ні).</p>
+        <p>&copy; 2026 Марк Гапяк. Працює прямо у браузері.</p>
     </footer>
+
+    <script src="app.js"></script>
 </body>
 </html>
