@@ -1,5 +1,5 @@
 // ==========================================
-// НАВІГАЦІЯ ТА СПІЛЬНЕ
+// НАВІГАЦІЯ ТА СПІЛЬНІ ФУНКЦІЇ
 // ==========================================
 function switchLab(labId) {
     document.querySelectorAll('.lab-section').forEach(s => s.classList.remove('active'));
@@ -10,11 +10,14 @@ function switchLab(labId) {
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
+// Ініціалізація всіх модулів при завантаженні сторінки
 window.onload = function() {
     initMatrixInputs();
     drawGraph();
     generateArray();
+    generateSearchArray();
 };
+
 
 // ==========================================
 // ЛР 21-23: ГРАФИ
@@ -26,6 +29,7 @@ const n = 5;
 let nodeStates = new Array(n).fill('unvisited'); 
 const centerX = 200, centerY = 200, radius = 120;
 const nodePositions = [];
+
 for (let i = 0; i < n; i++) {
     const angle = (i * 2 * Math.PI) / n - Math.PI / 2;
     nodePositions.push({ x: centerX + radius * Math.cos(angle), y: centerY + radius * Math.sin(angle) });
@@ -154,6 +158,7 @@ async function runBFS() {
     logToConsole("\n=== КІНЕЦЬ BFS ===");
 }
 
+
 // ==========================================
 // ЛР 1-8: СОРТУВАННЯ
 // ==========================================
@@ -193,7 +198,6 @@ async function startSorting() {
     const asc = document.getElementById('sortOrder').value === 'asc';
     let arr = [...currentArray]; 
 
-    // Динамічна швидкість залежно від розміру
     ANIMATION_SPEED = arr.length > 30 ? 20 : 60;
 
     switch(algo) {
@@ -356,4 +360,181 @@ async function heapSort(arr, asc) {
         let temp = arr[0]; arr[0] = arr[i]; arr[i] = temp;
         await heapify(arr, i, 0, asc);
     }
+}
+
+
+// ==========================================
+// ЛР 9-10: ПОШУК В МАСИВІ
+// ==========================================
+let searchArray = [];
+let isSearchSorted = false;
+let isSearching = false;
+
+function generateSearchArray() {
+    if (isSearching) return;
+    searchArray = [];
+    for (let i = 0; i < 15; i++) {
+        searchArray.push(Math.floor(Math.random() * 90) + 10);
+    }
+    isSearchSorted = false;
+    drawSearchArray();
+    logSearch("Новий масив згенеровано. Стан: Не відсортований", true);
+}
+
+function sortSearchArray() {
+    if (isSearching) return;
+    searchArray.sort((a, b) => a - b);
+    isSearchSorted = true;
+    drawSearchArray();
+    logSearch("Масив відсортовано. Бінарний пошук розблоковано.", true);
+}
+
+function drawSearchArray(current = -1, left = -1, right = -1, mid = -1, found = -1, barrier = -1) {
+    const container = document.getElementById('searchVisualizer');
+    container.innerHTML = '';
+    
+    searchArray.forEach((val, i) => {
+        const cell = document.createElement('div');
+        cell.className = 'search-cell';
+        cell.innerText = val;
+        cell.setAttribute('data-index', i);
+
+        if (left !== -1 && right !== -1) {
+            if (i >= left && i <= right) cell.classList.add('active-zone');
+            else cell.classList.add('dimmed');
+        }
+        if (i === barrier) cell.classList.add('barrier');
+        if (i === mid) cell.classList.add('mid');
+        if (i === current) cell.classList.add('current');
+        if (i === found) cell.classList.add('found');
+
+        container.appendChild(cell);
+    });
+}
+
+function logSearch(text, clear = false) {
+    const consoleDiv = document.getElementById('searchConsole');
+    if (clear) consoleDiv.innerHTML = '';
+    consoleDiv.innerHTML += text + '\n';
+    consoleDiv.scrollTop = consoleDiv.scrollHeight;
+}
+
+// 1. Лінійний пошук
+async function runLinearSearch() {
+    if (isSearching || searchArray.length === 0) return;
+    isSearching = true;
+    let target = parseInt(document.getElementById('searchTarget').value);
+    if (isNaN(target)) target = searchArray[0];
+
+    logSearch(`\n=== ЛІНІЙНИЙ ПОШУК (Шукаємо: ${target}) ===`);
+    let comparisons = 0;
+    let foundIdx = -1;
+
+    for (let i = 0; i < searchArray.length; i++) {
+        comparisons++;
+        drawSearchArray(i);
+        await sleep(400);
+
+        if (searchArray[i] === target) {
+            foundIdx = i;
+            drawSearchArray(-1, -1, -1, -1, i);
+            break;
+        }
+    }
+
+    if (foundIdx !== -1) logSearch(`[Успіх] Знайдено на індексі [${foundIdx}]`);
+    else logSearch(`[Не знайдено] Елемент відсутній у масиві`);
+    logSearch(`Порівнянь: ${comparisons}`);
+    
+    if (foundIdx === -1) drawSearchArray();
+    isSearching = false;
+}
+
+// 2. Лінійний пошук з бар'єром
+async function runBarrierSearch() {
+    if (isSearching || searchArray.length === 0) return;
+    isSearching = true;
+    let target = parseInt(document.getElementById('searchTarget').value);
+    if (isNaN(target)) target = searchArray[0];
+
+    logSearch(`\n=== ПОШУК З БАР'ЄРОМ (Шукаємо: ${target}) ===`);
+    
+    let n = searchArray.length;
+    let lastVal = searchArray[n - 1];
+    searchArray[n - 1] = target; 
+    
+    logSearch(`Встановлено бар'єр на індекс [${n - 1}]`);
+    drawSearchArray(-1, -1, -1, -1, -1, n - 1);
+    await sleep(800);
+
+    let i = 0;
+    let comparisons = 0;
+    
+    while (searchArray[i] !== target) {
+        comparisons++;
+        drawSearchArray(i, -1, -1, -1, -1, n - 1);
+        await sleep(400);
+        i++;
+    }
+    comparisons++; 
+
+    searchArray[n - 1] = lastVal; 
+    
+    if (i < n - 1 || searchArray[n - 1] === target) {
+        drawSearchArray(-1, -1, -1, -1, i);
+        logSearch(`[Успіх] Знайдено на індексі [${i}]`);
+    } else {
+        drawSearchArray();
+        logSearch(`[Не знайдено] Елемент відсутній у масиві (алгоритм зупинився об бар'єр)`);
+    }
+    logSearch(`Порівнянь: ${comparisons}`);
+    isSearching = false;
+}
+
+// 3. Бінарний пошук
+async function runBinarySearch() {
+    if (isSearching || searchArray.length === 0) return;
+    if (!isSearchSorted) {
+        alert("Для бінарного пошуку масив має бути відсортованим! Натисніть кнопку 'Відсортувати'.");
+        return;
+    }
+    
+    isSearching = true;
+    let target = parseInt(document.getElementById('searchTarget').value);
+    if (isNaN(target)) target = searchArray[0];
+
+    logSearch(`\n=== БІНАРНИЙ ПОШУК (Шукаємо: ${target}) ===`);
+    
+    let left = 0;
+    let right = searchArray.length - 1;
+    let comparisons = 0;
+    let foundIdx = -1;
+
+    while (left <= right) {
+        let mid = Math.floor(left + (right - left) / 2);
+        comparisons++;
+        
+        logSearch(`Діапазон: [${left} ... ${right}], Середина: [${mid}]`);
+        drawSearchArray(-1, left, right, mid);
+        await sleep(1000);
+
+        if (searchArray[mid] === target) {
+            foundIdx = mid;
+            drawSearchArray(-1, -1, -1, -1, mid);
+            break;
+        }
+        if (searchArray[mid] < target) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
+
+    if (foundIdx !== -1) logSearch(`[Успіх] Знайдено на індексі [${foundIdx}]`);
+    else {
+        drawSearchArray();
+        logSearch(`[Не знайдено] Елемент відсутній у масиві`);
+    }
+    logSearch(`Порівнянь: ${comparisons}`);
+    isSearching = false;
 }
