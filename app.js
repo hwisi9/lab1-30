@@ -18,6 +18,10 @@ window.onload = function() {
     generateSearchArray();
     initHashTables();
     drawLists();
+    if (typeof drawLists === "function") drawLists();
+    if (typeof drawStack === "function") drawStack();
+    if (typeof drawQueue === "function") drawQueue();
+    if (typeof drawTreeCanvas === "function") drawTreeCanvas();
 };
 
 
@@ -816,4 +820,176 @@ function listReverse() {
         logList(`[Однозв'язний] Вказівники успішно перевернуто (Реверс).`);
         drawLists();
     }
+}
+// ==========================================
+// ЛР 15: СТЕК (STACK)
+// ==========================================
+let stackData = [];
+
+function stackPush() {
+    const val = parseInt(document.getElementById('stackValue').value) || 0;
+    if (stackData.length >= 10) { alert("Стек переповнено (ліміт 10 для візуалізації)!"); return; }
+    stackData.push(val);
+    drawStack();
+}
+
+function stackPop() {
+    if (stackData.length === 0) { alert("Стек порожній!"); return; }
+    stackData.pop();
+    drawStack();
+}
+
+function stackPeek() {
+    if (stackData.length === 0) alert("Стек порожній!");
+    else alert(`Верхній елемент: ${stackData[stackData.length - 1]}`);
+}
+
+function drawStack() {
+    const container = document.getElementById('stackVisualizer');
+    container.innerHTML = '';
+    stackData.forEach(val => {
+        container.innerHTML += `<div class="stack-item">${val}</div>`;
+    });
+}
+
+// ==========================================
+// ЛР 16-17: ЧЕРГИ ТА ДЕК
+// ==========================================
+let queueData = []; // Використовуємо один масив, але логіка різна
+
+function drawQueue() {
+    const type = document.getElementById('queueType').value;
+    const container = document.getElementById('queueVisualizer');
+    
+    // Перемикання інтерфейсу
+    document.getElementById('priorityInputDiv').style.display = (type === 'priority') ? 'block' : 'none';
+    document.getElementById('qControlsStandard').style.display = (type === 'deque') ? 'none' : 'flex';
+    document.getElementById('qControlsDeque').style.display = (type === 'deque') ? 'flex' : 'none';
+
+    container.innerHTML = '';
+    if (queueData.length === 0) { container.innerHTML = '<span style="color:gray;">Порожньо</span>'; return; }
+
+    queueData.forEach(item => {
+        if (type === 'priority') {
+            container.innerHTML += `<div class="queue-item" style="background:#f59e0b; border-color:#b45309;">${item.val}<small>Pr: ${item.pr}</small></div>`;
+        } else {
+            container.innerHTML += `<div class="queue-item">${item.val}</div>`;
+        }
+    });
+}
+
+function qEnqueue() {
+    const type = document.getElementById('queueType').value;
+    const val = parseInt(document.getElementById('qValue').value) || 0;
+
+    if (type === 'priority') {
+        const pr = parseInt(document.getElementById('qPriority').value) || 1;
+        queueData.push({val, pr});
+        queueData.sort((a, b) => b.pr - a.pr); // Сортування за пріоритетом (найвищий перший)
+    } else {
+        queueData.push({val}); // Кільцева (імітація звичайного FIFO)
+    }
+    drawQueue();
+}
+
+function qDequeue() {
+    if (queueData.length === 0) { alert("Черга порожня!"); return; }
+    queueData.shift();
+    drawQueue();
+}
+
+// Функції Дека
+function dqPushFront() { const val = parseInt(document.getElementById('qValue').value)||0; queueData.unshift({val}); drawQueue(); }
+function dqPushBack() { const val = parseInt(document.getElementById('qValue').value)||0; queueData.push({val}); drawQueue(); }
+function dqPopFront() { if(queueData.length===0) return; queueData.shift(); drawQueue(); }
+function dqPopBack() { if(queueData.length===0) return; queueData.pop(); drawQueue(); }
+
+// ==========================================
+// ЛР 18-20: ДЕРЕВА (BST ТА AVL)
+// ==========================================
+class TreeNode {
+    constructor(val) { this.val = val; this.left = null; this.right = null; this.height = 1; }
+}
+
+let bstRoot = null;
+let avlRoot = null;
+
+// Додавання у звичайне BST
+function insertBST(node, val) {
+    if (!node) return new TreeNode(val);
+    if (val < node.val) node.left = insertBST(node.left, val);
+    else if (val > node.val) node.right = insertBST(node.right, val);
+    return node;
+}
+
+// Додавання в AVL (з балансуванням)
+function getHeight(node) { return node ? node.height : 0; }
+function getBalance(node) { return node ? getHeight(node.left) - getHeight(node.right) : 0; }
+function rightRotate(y) {
+    let x = y.left; let T2 = x.right;
+    x.right = y; y.left = T2;
+    y.height = Math.max(getHeight(y.left), getHeight(y.right)) + 1;
+    x.height = Math.max(getHeight(x.left), getHeight(x.right)) + 1;
+    return x;
+}
+function leftRotate(x) {
+    let y = x.right; let T2 = y.left;
+    y.left = x; x.right = T2;
+    x.height = Math.max(getHeight(x.left), getHeight(x.right)) + 1;
+    y.height = Math.max(getHeight(y.left), getHeight(y.right)) + 1;
+    return y;
+}
+function insertAVL(node, val) {
+    if (!node) return new TreeNode(val);
+    if (val < node.val) node.left = insertAVL(node.left, val);
+    else if (val > node.val) node.right = insertAVL(node.right, val);
+    else return node;
+
+    node.height = 1 + Math.max(getHeight(node.left), getHeight(node.right));
+    let balance = getBalance(node);
+
+    if (balance > 1 && val < node.left.val) return rightRotate(node);
+    if (balance < -1 && val > node.right.val) return leftRotate(node);
+    if (balance > 1 && val > node.left.val) { node.left = leftRotate(node.left); return rightRotate(node); }
+    if (balance < -1 && val < node.right.val) { node.right = rightRotate(node.right); return leftRotate(node); }
+    return node;
+}
+
+function treeInsert() {
+    const type = document.getElementById('treeType').value;
+    const val = parseInt(document.getElementById('treeValue').value) || 0;
+    if (type === 'bst') bstRoot = insertBST(bstRoot, val);
+    else avlRoot = insertAVL(avlRoot, val);
+    drawTreeCanvas();
+}
+
+// Малювання дерева на Canvas
+function drawTreeCanvas() {
+    const canvas = document.getElementById('treeCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const type = document.getElementById('treeType').value;
+    const root = type === 'bst' ? bstRoot : avlRoot;
+    if (root) drawNode(ctx, root, canvas.width / 2, 40, canvas.width / 4);
+}
+
+function drawNode(ctx, node, x, y, dx) {
+    if (!node) return;
+    ctx.strokeStyle = '#4b5563'; ctx.lineWidth = 2;
+    if (node.left) {
+        ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x - dx, y + 60); ctx.stroke();
+        drawNode(ctx, node.left, x - dx, y + 60, dx / 1.8);
+    }
+    if (node.right) {
+        ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + dx, y + 60); ctx.stroke();
+        drawNode(ctx, node.right, x + dx, y + 60, dx / 1.8);
+    }
+    // Малюємо коло
+    ctx.beginPath(); ctx.arc(x, y, 20, 0, 2 * Math.PI);
+    ctx.fillStyle = document.getElementById('treeType').value === 'avl' ? '#8b5cf6' : '#3b82f6';
+    ctx.fill(); ctx.stroke();
+    // Текст
+    ctx.fillStyle = 'white'; ctx.font = 'bold 14px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(node.val, x, y);
 }
