@@ -1262,3 +1262,234 @@ function drawTrieNode(ctx, node, x, y, dx, charLabel) {
         drawTrieNode(ctx, node.children[keys[i]], childX, childY, dx / 1.8, keys[i]);
     }
 }
+// ==========================================
+// ЛР 26-30: СКЛАДНІ АЛГОРИТМИ НА ГРАФАХ
+// ==========================================
+
+const INF = 1000000000;
+
+function logAdvGraph(text, clear = false) {
+    const consoleDiv = document.getElementById('advGraphConsole');
+    if (!consoleDiv) return;
+    if (clear) consoleDiv.innerHTML = '';
+    consoleDiv.innerHTML += text + '\n';
+    consoleDiv.scrollTop = consoleDiv.scrollHeight;
+}
+
+function parseGraphMatrix() {
+    const raw = document.getElementById('advGraphMatrix').value.trim();
+    if (!raw) return [];
+    return raw.split('\n').map(row => 
+        row.split(',').map(val => {
+            let v = parseInt(val.trim());
+            return isNaN(v) ? 0 : v;
+        })
+    );
+}
+
+function runPrimJS() {
+    const g = parseGraphMatrix();
+    if (!g.length) return;
+    const n = g.length;
+    
+    logAdvGraph("=== ЛР 26: Алгоритм Пріма (MST) ===", true);
+    
+    let key = new Array(n).fill(INF);
+    let parent = new Array(n).fill(-1);
+    let inMST = new Array(n).fill(false);
+    key[0] = 0;
+    let totalWeight = 0;
+
+    logAdvGraph(`Крок | Вершина | ` + Array.from({length: n}, (_, i) => `v${i+1}`).join(' | '));
+    logAdvGraph("-".repeat(50));
+
+    for (let step = 0; step < n; step++) {
+        let u = -1;
+        for (let v = 0; v < n; v++) {
+            if (!inMST[v] && (u === -1 || key[v] < key[u])) u = v;
+        }
+        if (u === -1) break;
+
+        inMST[u] = true;
+        if (parent[u] !== -1) totalWeight += g[u][parent[u]];
+
+        let rowStr = `  ${step+1}  | v${u+1}(${key[u] === INF ? '∞' : key[u]}) | `;
+        for (let v = 0; v < n; v++) {
+            if (inMST[v]) rowStr += " MST |";
+            else if (key[v] === INF) rowStr += "  ∞  |";
+            else rowStr += ` ${key[v].toString().padStart(3, ' ')} |`;
+        }
+        logAdvGraph(rowStr);
+
+        for (let v = 0; v < n; v++) {
+            if (g[u][v] && !inMST[v] && g[u][v] < key[v]) {
+                key[v] = g[u][v];
+                parent[v] = u;
+            }
+        }
+    }
+
+    logAdvGraph("\nМінімальний кістяк:");
+    for (let i = 1; i < n; i++) {
+        if (parent[i] !== -1) {
+            logAdvGraph(` v${parent[i]+1} -- v${i+1} (вага: ${g[i][parent[i]]})`);
+        }
+    }
+    logAdvGraph(`Загальна вага MST: ${totalWeight}`);
+}
+
+function runDijkstraJS() {
+    const g = parseGraphMatrix();
+    if (!g.length) return;
+    const n = g.length;
+    let start = parseInt(document.getElementById('advStartNode').value) - 1 || 0;
+    let end = parseInt(document.getElementById('advEndNode').value) - 1 || n - 1;
+    
+    if (start < 0 || start >= n) start = 0;
+    if (end < 0 || end >= n) end = n - 1;
+
+    logAdvGraph(`=== ЛР 27: Алгоритм Дейкстри (Старт: v${start+1}) ===`, true);
+
+    let dist = new Array(n).fill(INF);
+    let parent = new Array(n).fill(-1);
+    let vis = new Array(n).fill(false);
+    dist[start] = 0;
+
+    logAdvGraph(`Крок | Поточна | ` + Array.from({length: n}, (_, i) => `v${i+1}`).join(' | '));
+    logAdvGraph("-".repeat(50));
+
+    for (let step = 0; step < n; step++) {
+        let u = -1;
+        for (let v = 0; v < n; v++) {
+            if (!vis[v] && (u === -1 || dist[v] < dist[u])) u = v;
+        }
+        if (u === -1 || dist[u] === INF) break;
+
+        vis[u] = true;
+
+        let rowStr = `  ${step+1}  |    v${u+1}   |`;
+        for (let v = 0; v < n; v++) {
+            if (vis[v]) rowStr += "  * |";
+            else if (dist[v] === INF) rowStr += "  ∞  |";
+            else rowStr += ` ${dist[v].toString().padStart(3, ' ')} |`;
+        }
+        logAdvGraph(rowStr);
+
+        for (let v = 0; v < n; v++) {
+            if (!vis[v] && g[u][v] && dist[u] !== INF && dist[u] + g[u][v] < dist[v]) {
+                dist[v] = dist[u] + g[u][v];
+                parent[v] = u;
+            }
+        }
+    }
+
+    logAdvGraph(`\nШлях від v${start+1} до v${end+1}:`);
+    if (dist[end] === INF) {
+        logAdvGraph("Шлях відсутній.");
+    } else {
+        let path = [];
+        for (let v = end; v !== -1; v = parent[v]) path.push(v + 1);
+        path.reverse();
+        logAdvGraph(`(довжина=${dist[end]})  ${path.join(' → ')}`);
+    }
+}
+
+function runBellmanFordJS() {
+    const g = parseGraphMatrix();
+    if (!g.length) return;
+    const n = g.length;
+    let start = parseInt(document.getElementById('advStartNode').value) - 1 || 0;
+    if (start < 0 || start >= n) start = 0;
+
+    logAdvGraph(`=== ЛР 28: Алгоритм Беллмана-Форда (Старт: v${start+1}) ===`, true);
+
+    let edges = [];
+    for(let i = 0; i < n; i++) {
+        for(let j = 0; j < n; j++) {
+            if(g[i][j] !== 0) edges.push({u: i, v: j, w: g[i][j]});
+        }
+    }
+
+    let dist = new Array(n).fill(INF);
+    let parent = new Array(n).fill(-1);
+    dist[start] = 0;
+
+    for (let i = 0; i < n - 1; i++) {
+        for (let e of edges) {
+            if (dist[e.u] !== INF && dist[e.u] + e.w < dist[e.v]) {
+                dist[e.v] = dist[e.u] + e.w;
+                parent[e.v] = e.u;
+            }
+        }
+    }
+
+    let negCycle = false;
+    for (let e of edges) {
+        if (dist[e.u] !== INF && dist[e.u] + e.w < dist[e.v]) negCycle = true;
+    }
+
+    if (negCycle) {
+        logAdvGraph("⚠ Виявлено від'ємний цикл!");
+        return;
+    }
+
+    logAdvGraph("Вершина | Відстань | Шлях");
+    logAdvGraph("-".repeat(40));
+    for (let i = 0; i < n; i++) {
+        let d = dist[i] === INF ? "∞" : dist[i];
+        let pathStr = "недосяжна";
+        if (dist[i] !== INF) {
+            let path = [];
+            for (let v = i; v !== -1; v = parent[v]) path.push(v + 1);
+            path.reverse();
+            pathStr = path.join(' → ');
+        }
+        logAdvGraph(`   v${i+1}   |    ${d.toString().padEnd(3, ' ')}   | ${pathStr}`);
+    }
+}
+
+function runFloydWarshallJS() {
+    const g = parseGraphMatrix();
+    if (!g.length) return;
+    const n = g.length;
+
+    logAdvGraph(`=== ЛР 29: Алгоритм Флойда-Воршалла ===`, true);
+
+    let dist = Array.from({length: n}, () => new Array(n).fill(INF));
+    let next = Array.from({length: n}, () => new Array(n).fill(-1));
+
+    for (let i = 0; i < n; i++) {
+        for (let j = 0; j < n; j++) {
+            if (i === j) dist[i][j] = 0;
+            else if (g[i][j] !== 0) {
+                dist[i][j] = g[i][j];
+                next[i][j] = j;
+            }
+        }
+    }
+
+    for (let k = 0; k < n; k++) {
+        for (let i = 0; i < n; i++) {
+            for (let j = 0; j < n; j++) {
+                if (dist[i][k] !== INF && dist[k][j] !== INF && dist[i][k] + dist[k][j] < dist[i][j]) {
+                    dist[i][j] = dist[i][k] + dist[k][j];
+                    next[i][j] = next[i][k];
+                }
+            }
+        }
+    }
+
+    logAdvGraph("Матриця найкоротших відстаней:");
+    let header = "      | " + Array.from({length: n}, (_, i) => `v${i+1}`).join(' | ');
+    logAdvGraph(header);
+    logAdvGraph("-".repeat(header.length));
+    
+    for (let i = 0; i < n; i++) {
+        let rowStr = `  v${i+1}  |`;
+        for (let j = 0; j < n; j++) {
+            let val = dist[i][j] === INF ? "INF" : dist[i][j];
+            rowStr += ` ${val.toString().padStart(2, ' ')} |`;
+        }
+        logAdvGraph(rowStr);
+    }
+}
