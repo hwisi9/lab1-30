@@ -19,6 +19,9 @@
             <a href="#" class="menu-item" onclick="switchLab('lab-search')">ЛР 9-10: Пошук</a>
             <a href="#" class="menu-item" onclick="switchLab('lab-hash')">ЛР 11-12: Хеш-таблиці</a>
             <a href="#" class="menu-item" onclick="switchLab('lab-lists')">ЛР 13-14: Зв'язні списки</a>
+            <a href="#" class="menu-item" onclick="switchLab('lab-stack')">ЛР 15: Стек (Stack)</a>
+            <a href="#" class="menu-item" onclick="switchLab('lab-queues')">ЛР 16-17: Черги та Дек</a>
+            <a href="#" class="menu-item" onclick="switchLab('lab-trees')">ЛР 18-20: Дерева (Trees)</a>
         </nav>
     </aside>
 
@@ -244,6 +247,105 @@
         </div>
     </div>
 </div>
+<div id="lab-stack" class="lab-section">
+            <header class="section-header">
+                <h2>Структура даних: Стек (Stack)</h2>
+                <p>Лабораторна робота №15. LIFO (Last In, First Out).</p>
+            </header>
+            <div class="workspace-grid" style="grid-template-columns: 1fr;">
+                <div class="card">
+                    <div style="display: flex; gap: 20px; align-items: flex-end;">
+                        <div>
+                            <p class="hint">Значення:</p>
+                            <input type="number" id="stackValue" value="10" style="width: 100px; padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151;">
+                        </div>
+                        <div class="controls">
+                            <button class="btn btn-primary" onclick="stackPush()">Push (Додати)</button>
+                            <button class="btn btn-secondary" style="background-color: #ef4444;" onclick="stackPop()">Pop (Вилучити)</button>
+                            <button class="btn btn-secondary" onclick="stackPeek()">Peek (Вершина)</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card" style="display: flex; justify-content: center;">
+                    <div class="stack-visualizer" id="stackVisualizer">
+                        </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="lab-queues" class="lab-section">
+            <header class="section-header">
+                <h2>Черги (Queues) та Дек (Deque)</h2>
+                <p>Лабораторні роботи №16-17. FIFO, пріоритети та двостороння черга.</p>
+            </header>
+            <div class="workspace-grid" style="grid-template-columns: 1fr;">
+                <div class="card">
+                    <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-end;">
+                        <div>
+                            <p class="hint">Тип:</p>
+                            <select id="queueType" style="padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151;" onchange="drawQueue()">
+                                <option value="circular">Кільцева черга</option>
+                                <option value="priority">Пріоритетна черга</option>
+                                <option value="deque">Дек (Deque)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <p class="hint">Значення:</p>
+                            <input type="number" id="qValue" value="42" style="width: 80px; padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151;">
+                        </div>
+                        <div id="priorityInputDiv" style="display: none;">
+                            <p class="hint" style="color: #f59e0b;">Пріоритет:</p>
+                            <input type="number" id="qPriority" value="1" style="width: 80px; padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151;">
+                        </div>
+                        <div class="controls" id="qControlsStandard">
+                            <button class="btn btn-primary" onclick="qEnqueue()">Додати (Enqueue)</button>
+                            <button class="btn btn-secondary" style="background-color: #ef4444;" onclick="qDequeue()">Вилучити (Dequeue)</button>
+                        </div>
+                        <div class="controls" id="qControlsDeque" style="display: none;">
+                            <button class="btn btn-primary" onclick="dqPushFront()">+ Початок</button>
+                            <button class="btn btn-primary" onclick="dqPushBack()">+ Кінець</button>
+                            <button class="btn btn-secondary" style="background-color: #ef4444;" onclick="dqPopFront()">- Початок</button>
+                            <button class="btn btn-secondary" style="background-color: #ef4444;" onclick="dqPopBack()">- Кінець</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div id="queueVisualizer" class="queue-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="lab-trees" class="lab-section">
+            <header class="section-header">
+                <h2>Дерева (Trees)</h2>
+                <p>Лабораторні роботи №18-20. BST, AVL-дерево (з балансуванням) та Trie.</p>
+            </header>
+            <div class="workspace-grid" style="grid-template-columns: 1fr;">
+                <div class="card">
+                    <div style="display: flex; gap: 20px; align-items: flex-end;">
+                        <div>
+                            <p class="hint">Тип дерева:</p>
+                            <select id="treeType" style="padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151;" onchange="drawTreeCanvas()">
+                                <option value="bst">Бінарне дерево пошуку (BST)</option>
+                                <option value="avl">AVL Дерево (з балансуванням)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <p class="hint">Вузол:</p>
+                            <input type="number" id="treeValue" value="50" style="width: 80px; padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151;">
+                        </div>
+                        <div class="controls">
+                            <button class="btn btn-primary" onclick="treeInsert()">Додати вузол</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card visualizer-card">
+                    <div class="canvas-wrapper" style="width: 100%; overflow-x: auto; text-align: center;">
+                        <canvas id="treeCanvas" width="800" height="400"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     </main>
 
