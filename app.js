@@ -16,6 +16,7 @@ window.onload = function() {
     drawGraph();
     generateArray();
     generateSearchArray();
+    initHashTables();
 };
 
 
@@ -537,4 +538,164 @@ async function runBinarySearch() {
     }
     logSearch(`Порівнянь: ${comparisons}`);
     isSearching = false;
+}
+// ==========================================
+// ЛР 11-12: ХЕШ-ТАБЛИЦІ
+// ==========================================
+const HASH_SIZE = 11;
+let tableChain = Array.from({length: HASH_SIZE}, () => []);
+let tableOpen = Array.from({length: HASH_SIZE}, () => ({ state: 'free', key: null, value: '' }));
+let collisionsCount = 0;
+
+function hashFunction(key) {
+    return key % HASH_SIZE;
+}
+
+function initHashTables() {
+    tableChain = Array.from({length: HASH_SIZE}, () => []);
+    tableOpen = Array.from({length: HASH_SIZE}, () => ({ state: 'free', key: null, value: '' }));
+    collisionsCount = 0;
+    drawHashTables();
+}
+
+function drawHashTables() {
+    const container = document.getElementById('hashVisualizer');
+    container.innerHTML = '';
+    document.getElementById('collisionCounter').innerText = `Колізій: ${collisionsCount}`;
+
+    for (let i = 0; i < HASH_SIZE; i++) {
+        const row = document.createElement('div');
+        row.className = 'hash-row';
+
+        // Індекс
+        const idxDiv = document.createElement('div');
+        idxDiv.className = 'hash-index';
+        idxDiv.innerText = `[${i}]`;
+        row.appendChild(idxDiv);
+
+        // Ланцюжки
+        const chainDiv = document.createElement('div');
+        chainDiv.className = 'hash-chain-area';
+        if (tableChain[i].length === 0) {
+            chainDiv.innerHTML = '<span style="color: #6b7280; font-size: 0.85rem;">NULL</span>';
+        } else {
+            tableChain[i].forEach(entry => {
+                const item = document.createElement('div');
+                item.className = 'hash-chain-item';
+                item.innerText = `{${entry.key}: ${entry.value}}`;
+                chainDiv.appendChild(item);
+            });
+        }
+        row.appendChild(chainDiv);
+
+        // Відкрита адресація
+        const openDiv = document.createElement('div');
+        openDiv.className = `hash-open-area ${tableOpen[i].state}`;
+        if (tableOpen[i].state === 'free') openDiv.innerText = '[ Вільна ]';
+        else if (tableOpen[i].state === 'deleted') openDiv.innerText = '[ Видалено ]';
+        else openDiv.innerText = `{${tableOpen[i].key}: ${tableOpen[i].value}}`;
+        row.appendChild(openDiv);
+
+        container.appendChild(row);
+    }
+}
+
+function logHash(text, clear = false) {
+    const consoleDiv = document.getElementById('hashConsole');
+    if (clear) consoleDiv.innerHTML = '';
+    consoleDiv.innerHTML += text + '\n';
+    consoleDiv.scrollTop = consoleDiv.scrollHeight;
+}
+
+function getHashInputs() {
+    const key = parseInt(document.getElementById('hashKey').value);
+    const value = document.getElementById('hashValue').value || "дані";
+    return { key, value };
+}
+
+function insertHash() {
+    const { key, value } = getHashInputs();
+    if (isNaN(key)) { alert("Введіть коректний числовий ключ!"); return; }
+
+    const h = hashFunction(key);
+    logHash(`\n[+] Спроба вставити {${key}: ${value}} (Базовий хеш: ${h})`);
+
+    // 1. Метод ланцюжків
+    let foundChain = tableChain[h].find(e => e.key === key);
+    if (foundChain) foundChain.value = value;
+    else tableChain[h].push({ key, value });
+
+    // 2. Відкрита адресація (Квадратичне пробування)
+    let inserted = false;
+    for (let attempt = 0; attempt < HASH_SIZE; attempt++) {
+        let index = (h + attempt * attempt) % HASH_SIZE;
+        if (attempt > 0) collisionsCount++;
+
+        if (tableOpen[index].state !== 'used') {
+            tableOpen[index] = { state: 'used', key, value };
+            inserted = true;
+            break;
+        } else if (tableOpen[index].key === key) {
+            tableOpen[index].value = value;
+            inserted = true;
+            break;
+        }
+    }
+
+    if (!inserted) logHash("[-] Помилка: Таблиця відкритої адресації переповнена!");
+    else logHash(`[Успіх] Елемент додано.`);
+    
+    drawHashTables();
+}
+
+function searchHash() {
+    const { key } = getHashInputs();
+    if (isNaN(key)) return;
+    const h = hashFunction(key);
+    logHash(`\n--- Пошук ключа ${key} (Базовий хеш: ${h}) ---`);
+
+    // Ланцюжки
+    let foundChain = tableChain[h].find(e => e.key === key);
+    logHash(`Ланцюжки: ${foundChain ? 'Знайдено (Значення: ' + foundChain.value + ')' : 'Не знайдено'}`);
+
+    // Відкрита адресація
+    let foundOpen = false;
+    for (let attempt = 0; attempt < HASH_SIZE; attempt++) {
+        let index = (h + attempt * attempt) % HASH_SIZE;
+        if (tableOpen[index].state === 'free') break;
+        if (tableOpen[index].state === 'used' && tableOpen[index].key === key) {
+            logHash(`Відкрита адресація: Знайдено (Значення: ${tableOpen[index].value})`);
+            foundOpen = true;
+            break;
+        }
+    }
+    if (!foundOpen) logHash(`Відкрита адресація: Не знайдено`);
+}
+
+function removeHash() {
+    const { key } = getHashInputs();
+    if (isNaN(key)) return;
+    const h = hashFunction(key);
+    let removed = false;
+
+    // Ланцюжки
+    const initialLen = tableChain[h].length;
+    tableChain[h] = tableChain[h].filter(e => e.key !== key);
+    if (tableChain[h].length < initialLen) removed = true;
+
+    // Відкрита адресація
+    for (let attempt = 0; attempt < HASH_SIZE; attempt++) {
+        let index = (h + attempt * attempt) % HASH_SIZE;
+        if (tableOpen[index].state === 'free') break;
+        if (tableOpen[index].state === 'used' && tableOpen[index].key === key) {
+            tableOpen[index].state = 'deleted';
+            removed = true;
+            break;
+        }
+    }
+
+    if (removed) logHash(`\n[+] Елемент з ключем ${key} успішно видалено.`);
+    else logHash(`\n[-] Елемент з ключем ${key} не знайдено для видалення.`);
+    
+    drawHashTables();
 }
