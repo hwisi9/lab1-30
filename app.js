@@ -1188,41 +1188,82 @@ function trieDeleteWord() {
 }
 
 // --- Малювання на Canvas ---
+function calcTreeDepth(node) {
+    return node ? 1 + Math.max(calcTreeDepth(node.left), calcTreeDepth(node.right)) : 0;
+}
+
 function drawTreeCanvas() {
     const canvas = document.getElementById('treeCanvas');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
     const type = document.getElementById('treeType').value;
-    
+
+    // Динамічний розмір полотна, щоб глибокі дерева не обрізалися знизу
+    if (type !== 'trie') {
+        const root = type === 'bst' ? bstRoot : avlRoot;
+        let depth = calcTreeDepth(root);
+        // Базова висота 400, але додаємо по 70px за кожен рівень
+        canvas.height = Math.max(400, depth * 70 + 50); 
+    } else {
+        canvas.height = 500; // Фіксовано для Trie, воно зазвичай ширше
+    }
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
     if (type === 'trie') {
-        drawTrieNode(ctx, trieRoot, canvas.width / 2, 30, canvas.width / 4, '*');
+        drawTrieNode(ctx, trieRoot, canvas.width / 2, 30, (canvas.width / 4) - 10, '*');
     } else {
         const root = type === 'bst' ? bstRoot : avlRoot;
-        if (root) drawBinaryNode(ctx, root, canvas.width / 2, 40, canvas.width / 4, type);
+        // Початковий dx трохи зменшений ((width/4) - 20), щоб гарантувати відступ від країв
+        if (root) drawBinaryNode(ctx, root, canvas.width / 2, 40, (canvas.width / 4) - 20, type);
     }
 }
 
 function drawBinaryNode(ctx, node, x, y, dx, type) {
     if (!node) return;
     ctx.strokeStyle = '#4b5563'; ctx.lineWidth = 2;
+    
     if (node.left) {
         ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x - dx, y + 60); ctx.stroke();
-        drawBinaryNode(ctx, node.left, x - dx, y + 60, dx / 1.8, type);
+        // Ділимо суворо на 2, щоб гілки ніколи не перетнули 0-ву або 800-ту координату
+        drawBinaryNode(ctx, node.left, x - dx, y + 60, dx / 2, type); 
     }
     if (node.right) {
         ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + dx, y + 60); ctx.stroke();
-        drawBinaryNode(ctx, node.right, x + dx, y + 60, dx / 1.8, type);
+        drawBinaryNode(ctx, node.right, x + dx, y + 60, dx / 2, type);
     }
+    
     ctx.beginPath(); ctx.arc(x, y, 20, 0, 2 * Math.PI);
     ctx.fillStyle = type === 'avl' ? '#8b5cf6' : '#3b82f6';
     ctx.fill(); ctx.stroke();
+    
     ctx.fillStyle = 'white'; ctx.font = 'bold 14px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.fillText(node.val, x, y);
 }
 
 function drawTrieNode(ctx, node, x, y, dx, charLabel) {
     if (!node) return;
+    
+    ctx.beginPath(); ctx.arc(x, y, charLabel === '*' ? 15 : 18, 0, 2 * Math.PI);
+    ctx.fillStyle = node.isEndOfWord ? '#10b981' : '#374151';
+    ctx.fill(); ctx.strokeStyle = '#9ca3af'; ctx.lineWidth = 2; ctx.stroke();
+    
+    ctx.fillStyle = 'white'; ctx.font = 'bold 16px monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(charLabel.toUpperCase(), x, y);
+
+    let keys = Object.keys(node.children);
+    let n = keys.length;
+    if (n === 0) return;
+    
+    let startX = x - (dx * (n - 1)) / 2;
+    for (let i = 0; i < n; i++) {
+        let childX = startX + i * dx;
+        let childY = y + 60;
+        ctx.beginPath(); ctx.moveTo(x, y + 18); ctx.lineTo(childX, childY - 18); ctx.strokeStyle = '#4b5563'; ctx.stroke();
+        // Для Trie залишаємо 1.8, бо там може бути більше ніж 2 гілки
+        drawTrieNode(ctx, node.children[keys[i]], childX, childY, dx / 1.8, keys[i]);
+    }
+}
     
     // Якщо це корінь, малюємо його сірим і меншим
     ctx.beginPath(); ctx.arc(x, y, charLabel === '*' ? 15 : 18, 0, 2 * Math.PI);
