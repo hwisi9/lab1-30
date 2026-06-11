@@ -3,42 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Лабораторні роботи | Марк Гапяк</title>
+    <title>Збірник ЛР | Гапяк Марк</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header class="header">
-        <div class="container">
-            <h1>Марк Гапяк</h1>
-            <p>Група ІПЗ-22 | Інтерактивні лабораторні роботи з графів</p>
-        </div>
-    </header>
 
-    <main class="container">
-        <section class="lab-card json-input-section">
-            <h2>Введення матриці суміжності (5x5)</h2>
-            <p>Змінюй числа в полях, щоб перебудувати граф:</p>
-            
-            <div class="matrix-container" id="matrixInputs">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h3>Гапяк Марк</h3>
+            <span class="group-badge">ІПЗ-22</span>
+        </div>
+        <nav class="sidebar-menu">
+            <a href="#" class="menu-item active" onclick="switchLab('lab-graphs')">ЛР 21-23: Графи & Алгоритми</a>
+            <a href="#" class="menu-item" onclick="switchLab('lab-sort')">ЛР 1-8: Сортування</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        
+        <div id="lab-graphs" class="lab-section active">
+            <header class="section-header">
+                <h2>Динамічний аналіз та візуалізація графів</h2>
+                <p>Лабораторні роботи №21, №22, №23</p>
+            </header>
+
+            <div class="workspace-grid">
+                <div class="card">
+                    <h3>Матриця суміжності (5x5)</h3>
+                    <p class="hint">Змінюй вагу ребер прямо в полях:</p>
+                    <div class="matrix-container" id="matrixInputs"></div>
+                    <div class="controls">
+                        <button class="btn btn-secondary" onclick="analyzeGraph()">Аналіз (ЛР21)</button>
+                        <button class="btn btn-primary" onclick="runDFS()">DFS (ЛР22)</button>
+                        <button class="btn btn-primary" style="background-color: #8b5cf6;" onclick="runBFS()">BFS (ЛР23)</button>
+                    </div>
                 </div>
 
-            <div class="controls">
-                <button class="btn" onclick="analyzeGraph()">1. Аналізувати граф (ЛР21)</button>
-                <button class="btn btn-accent" onclick="runDFS()">2. Запустити DFS (ЛР22)</button>
+                <div class="card visualizer-card">
+                    <h3>Графічна візуалізація графа</h3>
+                    <div class="canvas-wrapper">
+                        <canvas id="graphCanvas" width="400" height="400"></canvas>
+                    </div>
+                    <div class="legend">
+                        <span class="legend-item"><span class="dot active"></span> Активна</span>
+                        <span class="legend-item"><span class="dot visited"></span> Відвідана</span>
+                        <span class="legend-item"><span class="dot unvisited"></span> Не відвідана</span>
+                    </div>
+                </div>
             </div>
-        </section>
 
-        <section class="lab-card console-section">
-            <h2>Консоль виведення програми</h2>
-            <div class="console-output" id="consoleOutput">
-                Тут з'явиться результат роботи алгоритмів...
+            <div class="card console-card">
+                <h3>Консоль виведення програми</h3>
+                <div class="console-output" id="consoleOutput">Оберіть дію для запуску алгоритмів...</div>
             </div>
-        </section>
+        </div>
+
+        <div id="lab-sort" class="lab-section">
+            <header class="section-header">
+                <h2>Алгоритми сортування масивів</h2>
+                <p>Лабораторні роботи №1-8. Візуалізація алгоритмів у реальному часі.</p>
+            </header>
+
+            <div class="workspace-grid" style="grid-template-columns: 1fr;">
+                
+                <div class="card">
+                    <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-end;">
+                        <div>
+                            <p class="hint">Елементів (5-50):</p>
+                            <input type="number" id="arrSize" value="20" min="5" max="50" style="width: 80px; padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151;">
+                        </div>
+                        <div>
+                            <p class="hint">Алгоритм:</p>
+                            <select id="algoSelect" style="padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151;">
+                                <option value="1">1. Вибором (Selection)</option>
+                                <option value="2">2. Включенням (Insertion)</option>
+                                <option value="3">3. Бульбашкою (Bubble)</option>
+                                <option value="4">4. Злиттям (Merge)</option>
+                                <option value="5">5. Швидке (Quick)</option>
+                                <option value="6">6. Шелла (Shell)</option>
+                                <option value="7">7. Шейкерне (Shaker)</option>
+                                <option value="8">8. Пірамідальне (Heap)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <p class="hint">Напрямок:</p>
+                            <select id="sortOrder" style="padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151;">
+                                <option value="asc">За зростанням</option>
+                                <option value="desc">За спаданням</option>
+                            </select>
+                        </div>
+                        
+                        <div class="controls">
+                            <button class="btn btn-secondary" onclick="generateArray()">Новий масив</button>
+                            <button class="btn btn-primary" id="sortBtn" onclick="startSorting()">Запустити сортування</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Візуалізація процесу</h3>
+                    <div id="sortVisualizer" class="sort-container"></div>
+                </div>
+            </div>
+        </div>
+
     </main>
-
-    <footer class="footer">
-        <p>&copy; 2026 Марк Гапяк. Працює прямо у браузері.</p>
-    </footer>
 
     <script src="app.js"></script>
 </body>
