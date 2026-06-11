@@ -1493,3 +1493,111 @@ function runFloydWarshallJS() {
         logAdvGraph(rowStr);
     }
 }
+// --- Зчитування координат ---
+function parseCoords() {
+    const raw = document.getElementById('astarCoords').value.trim();
+    if (!raw) return [];
+    return raw.split('\n').map(row => {
+        let parts = row.split(',').map(v => parseFloat(v.trim()));
+        return { x: parts[0] || 0, y: parts[1] || 0 };
+    });
+}
+
+// --- ЛР 30: Алгоритм A* ---
+function runAStarJS() {
+    const g = parseGraphMatrix();
+    const coords = parseCoords();
+    if (!g.length || !coords.length) return;
+    const n = g.length;
+
+    let start = parseInt(document.getElementById('advStartNode').value) - 1 || 0;
+    let goal = parseInt(document.getElementById('advEndNode').value) - 1 || n - 1;
+
+    if (start < 0 || start >= n) start = 0;
+    if (goal < 0 || goal >= n) goal = n - 1;
+
+    if (coords.length < n) {
+        logAdvGraph("[-] Помилка: Кількість координат менша за кількість вершин у матриці!");
+        return;
+    }
+
+    logAdvGraph(`\n=== ЛР 30: Алгоритм A* (Старт: v${start+1}, Ціль: v${goal+1}) ===`, true);
+
+    // 1. Обчислення евристики (Евклідова відстань до цілі)
+    let h = new Array(n).fill(0);
+    for (let i = 0; i < n; i++) {
+        let dx = coords[i].x - coords[goal].x;
+        let dy = coords[i].y - coords[goal].y;
+        h[i] = Math.floor(Math.sqrt(dx * dx + dy * dy)); 
+    }
+
+    logAdvGraph("Автоматично обчислені h(v) [Евклідова до цілі]:");
+    for (let i = 0; i < n; i++) {
+        logAdvGraph(`  h(v${i+1}) = ${h[i]}`);
+    }
+    logAdvGraph("-".repeat(50));
+
+    // 2. Ініціалізація структур A*
+    let dist = new Array(n).fill(INF);
+    let parent = new Array(n).fill(-1);
+    let closed = new Array(n).fill(false);
+    dist[start] = 0;
+
+    let processed = 0;
+    let found = false;
+
+    // Черга з пріоритетом (спрощена через масив, бо n мале)
+    // f = dist + h
+    let pq = [{ v: start, f: h[start] }];
+
+    // 3. Основний цикл A*
+    while (pq.length > 0) {
+        // Сортуємо, щоб перший елемент мав найменший f
+        pq.sort((a, b) => a.f - b.f);
+        let current = pq.shift();
+        let u = current.v;
+
+        if (closed[u]) continue;
+        closed[u] = true;
+        processed++;
+
+        if (u === goal) {
+            found = true;
+            break;
+        }
+
+        // Перевірка сусідів
+        for (let v = 0; v < n; v++) {
+            let weight = g[u][v];
+            if (weight !== 0 && !closed[v]) {
+                if (dist[u] + weight < dist[v]) {
+                    dist[v] = dist[u] + weight;
+                    parent[v] = u;
+                    pq.push({ v: v, f: dist[v] + h[v] });
+                }
+            }
+        }
+    }
+
+    // 4. Виведення результатів
+    if (found) {
+        let path = [];
+        for (let v = goal; v !== -1; v = parent[v]) path.push(v + 1);
+        path.reverse();
+
+        logAdvGraph(`[+] Шлях знайдено!`);
+        logAdvGraph(`    Довжина шляху: ${dist[goal]}`);
+        logAdvGraph(`    Оброблено вершин: ${processed}`);
+        logAdvGraph(`    Маршрут: ${path.join(' → ')}`);
+        
+        logAdvGraph(`\nСхема маршруту:`);
+        for (let i = 0; i < path.length - 1; i++) {
+            let u = path[i] - 1;
+            let v = path[i+1] - 1;
+            let w = g[u][v];
+            logAdvGraph(`  [v${u+1}](${coords[u].x}, ${coords[u].y}) --${w}--> [v${v+1}](${coords[v].x}, ${coords[v].y})`);
+        }
+    } else {
+        logAdvGraph(`[-] Шлях до цільової вершини v${goal+1} не знайдено.`);
+    }
+}
