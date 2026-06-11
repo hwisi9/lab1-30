@@ -17,13 +17,11 @@ window.onload = function() {
     generateArray();
     generateSearchArray();
     initHashTables();
-    drawLists();
     if (typeof drawLists === "function") drawLists();
     if (typeof drawStack === "function") drawStack();
     if (typeof drawQueue === "function") drawQueue();
     if (typeof drawTreeCanvas === "function") drawTreeCanvas();
 };
-
 
 // ==========================================
 // ЛР 21-23: ГРАФИ
@@ -164,7 +162,6 @@ async function runBFS() {
     logToConsole("\n=== КІНЕЦЬ BFS ===");
 }
 
-
 // ==========================================
 // ЛР 1-8: СОРТУВАННЯ
 // ==========================================
@@ -222,7 +219,6 @@ async function startSorting() {
     currentArray = arr; 
 }
 
-// 1. Вибором
 async function selectionSort(arr, asc) {
     let n = arr.length;
     for (let i = 0; i < n - 1; i++) {
@@ -238,7 +234,6 @@ async function selectionSort(arr, asc) {
     }
 }
 
-// 2. Включенням
 async function insertionSort(arr, asc) {
     let n = arr.length;
     for (let i = 1; i < n; i++) {
@@ -250,7 +245,6 @@ async function insertionSort(arr, asc) {
     }
 }
 
-// 3. Бульбашкою
 async function bubbleSort(arr, asc) {
     let n = arr.length;
     for (let i = 0; i < n - 1; i++) {
@@ -266,7 +260,6 @@ async function bubbleSort(arr, asc) {
     }
 }
 
-// 4. Злиттям
 async function merge(arr, l, m, r, asc) {
     let n1 = m - l + 1, n2 = r - m;
     let L = new Array(n1), R = new Array(n2);
@@ -290,7 +283,6 @@ async function mergeSortRecursive(arr, l, r, asc) {
 }
 async function mergeSortStarter(arr, asc) { await mergeSortRecursive(arr, 0, arr.length - 1, asc); }
 
-// 5. Швидке
 async function partition(arr, low, high, asc) {
     let pivot = arr[high]; let i = (low - 1);
     for (let j = low; j <= high - 1; j++) {
@@ -308,7 +300,6 @@ async function quickSortRecursive(arr, low, high, asc) {
 }
 async function quickSortStarter(arr, asc) { await quickSortRecursive(arr, 0, arr.length - 1, asc); }
 
-// 6. Шелла
 async function shellSort(arr, asc) {
     let n = arr.length;
     for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
@@ -323,7 +314,6 @@ async function shellSort(arr, asc) {
     }
 }
 
-// 7. Шейкерне
 async function shakerSort(arr, asc) {
     let n = arr.length; let swapped = true; let start = 0, end = n - 1;
     while (swapped) {
@@ -342,7 +332,6 @@ async function shakerSort(arr, asc) {
     }
 }
 
-// 8. Пірамідальне (Купою)
 async function heapify(arr, n, i, asc) {
     let target = i; let l = 2 * i + 1; let r = 2 * i + 2;
     if (asc) {
@@ -367,7 +356,6 @@ async function heapSort(arr, asc) {
         await heapify(arr, i, 0, asc);
     }
 }
-
 
 // ==========================================
 // ЛР 9-10: ПОШУК В МАСИВІ
@@ -425,7 +413,6 @@ function logSearch(text, clear = false) {
     consoleDiv.scrollTop = consoleDiv.scrollHeight;
 }
 
-// 1. Лінійний пошук
 async function runLinearSearch() {
     if (isSearching || searchArray.length === 0) return;
     isSearching = true;
@@ -456,7 +443,6 @@ async function runLinearSearch() {
     isSearching = false;
 }
 
-// 2. Лінійний пошук з бар'єром
 async function runBarrierSearch() {
     if (isSearching || searchArray.length === 0) return;
     isSearching = true;
@@ -497,7 +483,6 @@ async function runBarrierSearch() {
     isSearching = false;
 }
 
-// 3. Бінарний пошук
 async function runBinarySearch() {
     if (isSearching || searchArray.length === 0) return;
     if (!isSearchSorted) {
@@ -544,6 +529,7 @@ async function runBinarySearch() {
     logSearch(`Порівнянь: ${comparisons}`);
     isSearching = false;
 }
+
 // ==========================================
 // ЛР 11-12: ХЕШ-ТАБЛИЦІ
 // ==========================================
@@ -572,13 +558,11 @@ function drawHashTables() {
         const row = document.createElement('div');
         row.className = 'hash-row';
 
-        // Індекс
         const idxDiv = document.createElement('div');
         idxDiv.className = 'hash-index';
         idxDiv.innerText = `[${i}]`;
         row.appendChild(idxDiv);
 
-        // Ланцюжки
         const chainDiv = document.createElement('div');
         chainDiv.className = 'hash-chain-area';
         if (tableChain[i].length === 0) {
@@ -593,7 +577,6 @@ function drawHashTables() {
         }
         row.appendChild(chainDiv);
 
-        // Відкрита адресація
         const openDiv = document.createElement('div');
         openDiv.className = `hash-open-area ${tableOpen[i].state}`;
         if (tableOpen[i].state === 'free') openDiv.innerText = '[ Вільна ]';
@@ -625,12 +608,10 @@ function insertHash() {
     const h = hashFunction(key);
     logHash(`\n[+] Спроба вставити {${key}: ${value}} (Базовий хеш: ${h})`);
 
-    // 1. Метод ланцюжків
     let foundChain = tableChain[h].find(e => e.key === key);
     if (foundChain) foundChain.value = value;
     else tableChain[h].push({ key, value });
 
-    // 2. Відкрита адресація (Квадратичне пробування)
     let inserted = false;
     for (let attempt = 0; attempt < HASH_SIZE; attempt++) {
         let index = (h + attempt * attempt) % HASH_SIZE;
@@ -659,11 +640,9 @@ function searchHash() {
     const h = hashFunction(key);
     logHash(`\n--- Пошук ключа ${key} (Базовий хеш: ${h}) ---`);
 
-    // Ланцюжки
     let foundChain = tableChain[h].find(e => e.key === key);
     logHash(`Ланцюжки: ${foundChain ? 'Знайдено (Значення: ' + foundChain.value + ')' : 'Не знайдено'}`);
 
-    // Відкрита адресація
     let foundOpen = false;
     for (let attempt = 0; attempt < HASH_SIZE; attempt++) {
         let index = (h + attempt * attempt) % HASH_SIZE;
@@ -683,12 +662,10 @@ function removeHash() {
     const h = hashFunction(key);
     let removed = false;
 
-    // Ланцюжки
     const initialLen = tableChain[h].length;
     tableChain[h] = tableChain[h].filter(e => e.key !== key);
     if (tableChain[h].length < initialLen) removed = true;
 
-    // Відкрита адресація
     for (let attempt = 0; attempt < HASH_SIZE; attempt++) {
         let index = (h + attempt * attempt) % HASH_SIZE;
         if (tableOpen[index].state === 'free') break;
@@ -704,12 +681,13 @@ function removeHash() {
     
     drawHashTables();
 }
+
 // ==========================================
 // ЛР 13-14: ЗВ'ЯЗНІ СПИСКИ
 // ==========================================
-let sList = []; // Однозв'язний (імітація через масив для рендеру)
-let dList = []; // Двозв'язний
-let cList = []; // Кільцевий
+let sList = []; 
+let dList = []; 
+let cList = []; 
 
 function logList(text, clear = false) {
     const consoleDiv = document.getElementById('listConsole');
@@ -771,13 +749,13 @@ function listInsert() {
     const val = getListInput();
 
     if (type === 'singly') {
-        sList.unshift(val); // Додаємо на початок
+        sList.unshift(val); 
         logList(`[Однозв'язний] Додано [${val}] на початок. Всього: ${sList.length}`);
     } else if (type === 'doubly') {
-        dList.push(val); // Додаємо в кінець
+        dList.push(val); 
         logList(`[Двозв'язний] Додано [${val}] в кінець.`);
     } else if (type === 'circular') {
-        cList.push(val); // Додаємо в кінець
+        cList.push(val); 
         logList(`[Кільцевий] Додано [${val}] в кінець кільця.`);
     }
     drawLists();
@@ -797,7 +775,7 @@ function listDelete() {
         }
     } else if (type === 'doubly') {
         if (dList.length > 0) {
-            const removed = dList.shift(); // Видаляємо перший (Head)
+            const removed = dList.shift(); 
             logList(`[Двозв'язний] Перший елемент [${removed}] видалено.`);
         } else {
             logList(`[Двозв'язний] Список і так порожній!`);
@@ -821,31 +799,91 @@ function listReverse() {
         drawLists();
     }
 }
+
 // ==========================================
-// ЛР 15: СТЕК (STACK)
+// ЛР 15: СТЕК (STACK) - ПОВНА РЕАЛІЗАЦІЯ
 // ==========================================
 let stackData = [];
 
+function logStack(text, clear = false) {
+    const consoleDiv = document.getElementById('stackConsole');
+    if (!consoleDiv) return;
+    if (clear) consoleDiv.innerHTML = '';
+    consoleDiv.innerHTML += text + '\n';
+    consoleDiv.scrollTop = consoleDiv.scrollHeight;
+}
+
 function stackPush() {
-    const val = parseInt(document.getElementById('stackValue').value) || 0;
-    if (stackData.length >= 10) { alert("Стек переповнено (ліміт 10 для візуалізації)!"); return; }
+    const val = parseInt(document.getElementById('stackValue').value);
+    if (isNaN(val)) { logStack("[-] Введіть коректне число!"); return; }
+    if (stackData.length >= 10) { logStack("[-] Помилка: Стек переповнено (ліміт для візуалізації)!"); return; }
+    
     stackData.push(val);
+    logStack(`[+] Додано (Push): ${val}`);
     drawStack();
 }
 
 function stackPop() {
-    if (stackData.length === 0) { alert("Стек порожній!"); return; }
-    stackData.pop();
+    if (stackData.length === 0) { logStack("[-] Помилка: Стек порожній!"); return; }
+    const val = stackData.pop();
+    logStack(`[-] Вилучено (Pop): ${val}`);
     drawStack();
 }
 
 function stackPeek() {
-    if (stackData.length === 0) alert("Стек порожній!");
-    else alert(`Верхній елемент: ${stackData[stackData.length - 1]}`);
+    if (stackData.length === 0) { logStack("[-] Стек порожній!"); }
+    else { logStack(`[i] Верхній елемент (Peek): ${stackData[stackData.length - 1]}`); }
+}
+
+function stackSearch() {
+    if (stackData.length === 0) { logStack("[-] Стек порожній, шукати ніде."); return; }
+    const val = parseInt(document.getElementById('stackValue').value);
+    if (isNaN(val)) { logStack("[-] Введіть число в поле 'Значення' для пошуку."); return; }
+    
+    let found = false;
+    for (let i = stackData.length - 1; i >= 0; i--) {
+        if (stackData[i] === val) {
+            const posFromTop = stackData.length - i;
+            logStack(`[+] Елемент ${val} знайдено на позиції ${posFromTop} від вершини.`);
+            found = true;
+            break;
+        }
+    }
+    if (!found) logStack(`[-] Елемент ${val} не знайдено у стеку.`);
+}
+
+function stackSumAvg() {
+    if (stackData.length === 0) { logStack("[-] Стек порожній."); return; }
+    let sum = stackData.reduce((a, b) => a + b, 0);
+    let avg = sum / stackData.length;
+    logStack(`[i] Сума елементів: ${sum} | Середнє значення: ${avg.toFixed(2)}`);
+}
+
+function stackSave() {
+    if (stackData.length === 0) { logStack("[-] Стек порожній — нічого зберігати."); return; }
+    localStorage.setItem('mySavedStack', JSON.stringify(stackData));
+    logStack(`[+] Стек успішно збережено у пам'ять браузера (імітація запису у файл).`);
+}
+
+function stackLoad() {
+    const saved = localStorage.getItem('mySavedStack');
+    if (!saved) { logStack("[-] Файл збереження не знайдено!"); return; }
+    
+    if (stackData.length > 0) {
+        if (!confirm("Поточний стек не порожній. Завантаження замінить усі дані. Продовжити?")) {
+            logStack("[i] Завантаження скасовано.");
+            return;
+        }
+    }
+    
+    stackData = JSON.parse(saved);
+    logStack(`[+] Стек успішно завантажено з пам'яті.`);
+    drawStack();
 }
 
 function drawStack() {
     const container = document.getElementById('stackVisualizer');
+    if (!container) return;
     container.innerHTML = '';
     stackData.forEach(val => {
         container.innerHTML += `<div class="stack-item">${val}</div>`;
@@ -855,13 +893,12 @@ function drawStack() {
 // ==========================================
 // ЛР 16-17: ЧЕРГИ ТА ДЕК
 // ==========================================
-let queueData = []; // Використовуємо один масив, але логіка різна
+let queueData = []; 
 
 function drawQueue() {
     const type = document.getElementById('queueType').value;
     const container = document.getElementById('queueVisualizer');
     
-    // Перемикання інтерфейсу
     document.getElementById('priorityInputDiv').style.display = (type === 'priority') ? 'block' : 'none';
     document.getElementById('qControlsStandard').style.display = (type === 'deque') ? 'none' : 'flex';
     document.getElementById('qControlsDeque').style.display = (type === 'deque') ? 'flex' : 'none';
@@ -885,9 +922,9 @@ function qEnqueue() {
     if (type === 'priority') {
         const pr = parseInt(document.getElementById('qPriority').value) || 1;
         queueData.push({val, pr});
-        queueData.sort((a, b) => b.pr - a.pr); // Сортування за пріоритетом (найвищий перший)
+        queueData.sort((a, b) => b.pr - a.pr); 
     } else {
-        queueData.push({val}); // Кільцева (імітація звичайного FIFO)
+        queueData.push({val}); 
     }
     drawQueue();
 }
@@ -898,7 +935,6 @@ function qDequeue() {
     drawQueue();
 }
 
-// Функції Дека
 function dqPushFront() { const val = parseInt(document.getElementById('qValue').value)||0; queueData.unshift({val}); drawQueue(); }
 function dqPushBack() { const val = parseInt(document.getElementById('qValue').value)||0; queueData.push({val}); drawQueue(); }
 function dqPopFront() { if(queueData.length===0) return; queueData.shift(); drawQueue(); }
@@ -914,7 +950,6 @@ class TreeNode {
 let bstRoot = null;
 let avlRoot = null;
 
-// Додавання у звичайне BST
 function insertBST(node, val) {
     if (!node) return new TreeNode(val);
     if (val < node.val) node.left = insertBST(node.left, val);
@@ -922,7 +957,6 @@ function insertBST(node, val) {
     return node;
 }
 
-// Додавання в AVL (з балансуванням)
 function getHeight(node) { return node ? node.height : 0; }
 function getBalance(node) { return node ? getHeight(node.left) - getHeight(node.right) : 0; }
 function rightRotate(y) {
@@ -963,7 +997,6 @@ function treeInsert() {
     drawTreeCanvas();
 }
 
-// Малювання дерева на Canvas
 function drawTreeCanvas() {
     const canvas = document.getElementById('treeCanvas');
     if (!canvas) return;
@@ -985,11 +1018,9 @@ function drawNode(ctx, node, x, y, dx) {
         ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + dx, y + 60); ctx.stroke();
         drawNode(ctx, node.right, x + dx, y + 60, dx / 1.8);
     }
-    // Малюємо коло
     ctx.beginPath(); ctx.arc(x, y, 20, 0, 2 * Math.PI);
     ctx.fillStyle = document.getElementById('treeType').value === 'avl' ? '#8b5cf6' : '#3b82f6';
     ctx.fill(); ctx.stroke();
-    // Текст
     ctx.fillStyle = 'white'; ctx.font = 'bold 14px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.fillText(node.val, x, y);
 }
