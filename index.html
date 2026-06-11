@@ -338,31 +338,63 @@
         <div id="lab-trees" class="lab-section">
             <header class="section-header">
                 <h2>Дерева (Trees)</h2>
-                <p>Лабораторні роботи №18-20. BST, AVL-дерево (з балансуванням) та Trie.</p>
+                <p>Лабораторні роботи №18-20. Повна реалізація: BST, AVL (видалення/балансування) та Trie (робота зі словами).</p>
             </header>
             <div class="workspace-grid" style="grid-template-columns: 1fr;">
                 <div class="card">
-                    <div style="display: flex; gap: 20px; align-items: flex-end;">
+                    <div style="display: flex; gap: 20px; align-items: flex-end; flex-wrap: wrap; margin-bottom: 15px;">
                         <div>
                             <p class="hint">Тип дерева:</p>
-                            <select id="treeType" style="padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151;" onchange="drawTreeCanvas()">
-                                <option value="bst">Бінарне дерево пошуку (BST)</option>
-                                <option value="avl">AVL Дерево (з балансуванням)</option>
+                            <select id="treeType" style="padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151;" onchange="updateTreeUI()">
+                                <option value="bst">Бінарне дерево (BST)</option>
+                                <option value="avl">AVL Дерево (Балансоване)</option>
+                                <option value="trie">Префіксне дерево (Trie)</option>
                             </select>
                         </div>
-                        <div>
-                            <p class="hint">Вузол:</p>
+                        
+                        <div id="treeNumInputDiv">
+                            <p class="hint">Вузол (число):</p>
                             <input type="number" id="treeValue" value="50" style="width: 80px; padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151;">
                         </div>
-                        <div class="controls">
-                            <button class="btn btn-primary" onclick="treeInsert()">Додати вузол</button>
+                        
+                        <div id="treeStrInputDiv" style="display: none;">
+                            <p class="hint">Слово / Префікс:</p>
+                            <input type="text" id="treeStrValue" placeholder="hello" style="width: 120px; padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151;">
+                        </div>
+                        
+                        <div class="controls" id="treeControlsNum">
+                            <button class="btn btn-primary" onclick="treeInsert()">Додати</button>
+                            <button class="btn btn-secondary" style="background-color: #ef4444;" onclick="treeDelete()">Видалити</button>
+                        </div>
+
+                        <div class="controls" id="treeControlsStr" style="display: none;">
+                            <button class="btn btn-primary" onclick="trieInsertWord()">Додати слово</button>
+                            <button class="btn btn-secondary" onclick="trieSearchWord()">Знайти</button>
+                            <button class="btn btn-secondary" onclick="trieCountPrefix()">Рахувати за префіксом</button>
+                            <button class="btn btn-secondary" style="background-color: #ef4444;" onclick="trieDeleteWord()">Видалити</button>
                         </div>
                     </div>
+                    
+                    <hr style="border-color: #374151; margin: 15px 0;" id="treeHr">
+                    
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;" id="treeExtraControls">
+                        <button class="btn btn-secondary" onclick="treeTraverse('in')">InOrder</button>
+                        <button class="btn btn-secondary" onclick="treeTraverse('pre')">PreOrder</button>
+                        <button class="btn btn-secondary" onclick="treeTraverse('post')">PostOrder</button>
+                        <button class="btn btn-secondary" style="background-color: #10b981;" onclick="treeMinMax()">Min / Max</button>
+                        <button class="btn btn-secondary" style="background-color: #8b5cf6;" onclick="treeStats()">Статистика</button>
+                    </div>
                 </div>
+
                 <div class="card visualizer-card">
                     <div class="canvas-wrapper" style="width: 100%; overflow-x: auto; text-align: center;">
                         <canvas id="treeCanvas" width="800" height="400"></canvas>
                     </div>
+                </div>
+
+                <div class="card console-card">
+                    <h3>Консоль виведення дерев</h3>
+                    <div class="console-output" id="treeConsole">Дерево готове до роботи...</div>
                 </div>
             </div>
         </div>
