@@ -699,3 +699,120 @@ function removeHash() {
     
     drawHashTables();
 }
+// ==========================================
+// ЛР 13-14: ЗВ'ЯЗНІ СПИСКИ
+// ==========================================
+let sList = []; // Однозв'язний (імітація через масив для рендеру)
+let dList = []; // Двозв'язний
+let cList = []; // Кільцевий
+
+function logList(text, clear = false) {
+    const consoleDiv = document.getElementById('listConsole');
+    if (clear) consoleDiv.innerHTML = '';
+    consoleDiv.innerHTML += text + '\n';
+    consoleDiv.scrollTop = consoleDiv.scrollHeight;
+}
+
+function getListInput() {
+    const val = parseInt(document.getElementById('listValue').value);
+    return isNaN(val) ? Math.floor(Math.random() * 99) : val;
+}
+
+function drawLists() {
+    const type = document.getElementById('listType').value;
+    const container = document.getElementById('listVisualizer');
+    const hint = document.getElementById('listRulesHint');
+    const btnReverse = document.getElementById('btnReverse');
+    container.innerHTML = '';
+
+    if (type === 'singly') {
+        hint.innerText = "Правило: Додає в початок. Видаляє за значенням. Можна реверсувати.";
+        btnReverse.disabled = false;
+        
+        container.innerHTML += `<span class="list-head-label">[Head]</span> <div class="list-arrow">→</div>`;
+        sList.forEach(val => {
+            container.innerHTML += `<div class="list-node">[${val}]</div> <div class="list-arrow">→</div>`;
+        });
+        container.innerHTML += `<div class="list-null">NULL</div>`;
+        
+    } else if (type === 'doubly') {
+        hint.innerText = "Правило: Додає в кінець. Видаляє перший елемент (Head).";
+        btnReverse.disabled = true;
+
+        container.innerHTML += `<div class="list-null">NULL</div> <div class="list-arrow">⇔</div>`;
+        dList.forEach(val => {
+            container.innerHTML += `<div class="list-node">[${val}]</div> <div class="list-arrow">⇔</div>`;
+        });
+        container.innerHTML += `<div class="list-null">NULL</div>`;
+
+    } else if (type === 'circular') {
+        hint.innerText = "Правило: Додає в кінець. Вказує на Head.";
+        btnReverse.disabled = true;
+
+        if (cList.length === 0) {
+            container.innerHTML += `<div class="list-null">Список порожній</div>`;
+        } else {
+            container.innerHTML += `<span class="list-head-label">Head</span> <div class="list-arrow">→</div>`;
+            cList.forEach(val => {
+                container.innerHTML += `<div class="list-node">[${val}]</div> <div class="list-arrow">→</div>`;
+            });
+            container.innerHTML += `<div class="list-arrow" style="color: #10b981;">(до Head: ${cList[0]})</div>`;
+        }
+    }
+}
+
+function listInsert() {
+    const type = document.getElementById('listType').value;
+    const val = getListInput();
+
+    if (type === 'singly') {
+        sList.unshift(val); // Додаємо на початок
+        logList(`[Однозв'язний] Додано [${val}] на початок. Всього: ${sList.length}`);
+    } else if (type === 'doubly') {
+        dList.push(val); // Додаємо в кінець
+        logList(`[Двозв'язний] Додано [${val}] в кінець.`);
+    } else if (type === 'circular') {
+        cList.push(val); // Додаємо в кінець
+        logList(`[Кільцевий] Додано [${val}] в кінець кільця.`);
+    }
+    drawLists();
+}
+
+function listDelete() {
+    const type = document.getElementById('listType').value;
+
+    if (type === 'singly') {
+        const val = getListInput();
+        const index = sList.indexOf(val);
+        if (index !== -1) {
+            sList.splice(index, 1);
+            logList(`[Однозв'язний] Перше входження [${val}] видалено.`);
+        } else {
+            logList(`[Однозв'язний] Елемент [${val}] не знайдено!`);
+        }
+    } else if (type === 'doubly') {
+        if (dList.length > 0) {
+            const removed = dList.shift(); // Видаляємо перший (Head)
+            logList(`[Двозв'язний] Перший елемент [${removed}] видалено.`);
+        } else {
+            logList(`[Двозв'язний] Список і так порожній!`);
+        }
+    } else if (type === 'circular') {
+        if (cList.length > 0) {
+            const removed = cList.shift();
+            logList(`[Кільцевий] Головний елемент [${removed}] видалено.`);
+        } else {
+            logList(`[Кільцевий] Список порожній!`);
+        }
+    }
+    drawLists();
+}
+
+function listReverse() {
+    const type = document.getElementById('listType').value;
+    if (type === 'singly') {
+        sList.reverse();
+        logList(`[Однозв'язний] Вказівники успішно перевернуто (Реверс).`);
+        drawLists();
+    }
+}
