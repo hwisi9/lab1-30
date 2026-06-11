@@ -1602,3 +1602,87 @@ function runAStarJS() {
         logAdvGraph(`[-] Шлях до цільової вершини v${goal+1} не знайдено.`);
     }
 }
+// ==========================================
+// ЛР 24: ТОПОЛОГІЧНЕ СОРТУВАННЯ (АЛГОРИТМ КАНА)
+// ==========================================
+
+function logTopo(text, clear = false) {
+    const consoleDiv = document.getElementById('topoConsole');
+    if (!consoleDiv) return;
+    if (clear) consoleDiv.innerHTML = '';
+    consoleDiv.innerHTML += text + '\n';
+    consoleDiv.scrollTop = consoleDiv.scrollHeight;
+}
+
+function runKahnJS() {
+    let n = parseInt(document.getElementById('topoNodes').value);
+    if (isNaN(n) || n <= 0) {
+        logTopo("[-] Помилка: введіть коректну кількість вершин.", true);
+        return;
+    }
+
+    // Зчитуємо сирий текст і розбиваємо на рядки
+    let edgesRaw = document.getElementById('topoEdges').value.trim().split('\n');
+    let graph = Array.from({length: n}, () => []);
+    let inDegree = new Array(n).fill(0);
+
+    logTopo(`=== ЛР 24: Топологічне сортування (Алгоритм Кана) ===`, true);
+
+    // Парсимо ребра
+    for (let line of edgesRaw) {
+        if (!line.trim()) continue;
+        let parts = line.trim().split(/\s+/).map(Number);
+        if (parts.length >= 2) {
+            let u = parts[0];
+            let v = parts[1];
+            if (u >= 0 && u < n && v >= 0 && v < n) {
+                graph[u].push(v);
+                inDegree[v]++;
+            } else {
+                logTopo(`[!] Ігноруємо ребро ${u} -> ${v} (вершини поза межами 0..${n-1})`);
+            }
+        }
+    }
+
+    logTopo(`[i] Граф зчитано. Вершин: ${n}\nСписок суміжності:`);
+    for (let i = 0; i < n; i++) {
+        logTopo(`  ${i}: ${graph[i].join(' ')}`);
+    }
+    logTopo("-".repeat(40));
+
+    // Реалізація Алгоритму Кана
+    let q = [];
+    let order = [];
+
+    // 1. Додаємо в чергу всі вершини, які не мають вхідних ребер (inDegree == 0)
+    for (let i = 0; i < n; i++) {
+        if (inDegree[i] === 0) {
+            q.push(i);
+        }
+    }
+
+    let count = 0;
+    
+    // 2. Основний цикл обробки черги
+    while (q.length > 0) {
+        let u = q.shift(); // Витягуємо перший елемент (як q.front() + q.pop() у С++)
+        order.push(u);
+        count++;
+
+        // Зменшуємо вхідний ступінь для всіх суміжних вершин
+        for (let v of graph[u]) {
+            inDegree[v]--;
+            if (inDegree[v] === 0) {
+                q.push(v);
+            }
+        }
+    }
+
+    // 3. Перевірка на цикл
+    if (count !== n) {
+        logTopo("\n[!] Помилка: виявлено цикл! Топологічне сортування неможливе.");
+    } else {
+        logTopo("\n[+] Сортування успішно виконано.");
+        logTopo(`Топологічний порядок вершин: ${order.join(' ')}`);
+    }
+}
