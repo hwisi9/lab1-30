@@ -157,118 +157,138 @@
                 </div>
             </div>
         </div>
-    <div id="lab-hash" class="lab-section">
-    <header class="section-header">
-        <h2>Хеш-таблиці та колізії</h2>
-        <p>Лабораторні роботи №11-12. Порівняння методу ланцюжків та відкритої адресації (квадратичне пробування).</p>
-    </header>
 
-    <div class="workspace-grid" style="grid-template-columns: 1fr;">
-        <div class="card">
-            <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-end;">
-                <div>
-                    <p class="hint">Ключ (число):</p>
-                    <input type="number" id="hashKey" placeholder="Напр. 42" style="width: 100px; padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151;">
-                </div>
-                <div>
-                    <p class="hint">Значення (текст):</p>
-                    <input type="text" id="hashValue" placeholder="Дані..." style="width: 150px; padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151;">
-                </div>
-                
-                <div class="controls">
-                    <button class="btn btn-primary" onclick="insertHash()">Вставити</button>
-                    <button class="btn btn-secondary" onclick="searchHash()">Знайти</button>
-                    <button class="btn btn-secondary" style="background-color: #ef4444;" onclick="removeHash()">Видалити</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h3>Візуалізація таблиць (Розмір: 11)</h3>
-                <span id="collisionCounter" style="background: #ef4444; padding: 4px 10px; border-radius: 4px; font-size: 0.85rem;">Колізій: 0</span>
-            </div>
-            
-            <div class="hash-headers">
-                <div class="hash-header-col">Метод ланцюжків</div>
-                <div class="hash-header-col">Відкрита адресація</div>
-            </div>
-            
-            <div id="hashVisualizer" class="hash-container">
-                </div>
-        </div>
-
-        <div class="card console-card">
-            <h3>Консоль виведення</h3>
-            <div class="console-output" id="hashConsole">Очікування команд...</div>
-        </div>
-    </div>
-</div>
-<div id="lab-lists" class="lab-section">
-    <header class="section-header">
-        <h2>Робота зі зв'язними списками</h2>
-        <p>Лабораторні роботи №13-14. Однозв'язний, двозв'язний та кільцевий списки.</p>
-    </header>
-
-    <div class="workspace-grid" style="grid-template-columns: 1fr;">
-        <div class="card">
-            <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-end;">
-                <div>
-                    <p class="hint">Тип списку:</p>
-                    <select id="listType" style="padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151;" onchange="drawLists()">
-                        <option value="singly">Однозв'язний (ЛР 13)</option>
-                        <option value="doubly">Двозв'язний (ЛР 14)</option>
-                        <option value="circular">Кільцевий (ЛР 14)</option>
-                    </select>
-                </div>
-                <div>
-                    <p class="hint">Значення:</p>
-                    <input type="number" id="listValue" placeholder="Напр. 10" style="width: 100px; padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151;">
-                </div>
-                
-                <div class="controls">
-                    <button class="btn btn-primary" onclick="listInsert()">Додати вузол</button>
-                    <button class="btn btn-secondary" style="background-color: #ef4444;" onclick="listDelete()">Видалити</button>
-                    <button class="btn btn-secondary" style="background-color: #8b5cf6;" onclick="listReverse()" id="btnReverse">Реверс (Тільки однозв.)</button>
-                </div>
-            </div>
-            <p class="hint" style="margin-top: 15px; color: #60a5fa;" id="listRulesHint">Правило: Однозв'язний додає в початок. Видалення за значенням.</p>
-        </div>
-
-        <div class="card">
-            <h3>Візуалізація структури</h3>
-            <div id="listVisualizer" class="list-container">
-                </div>
-        </div>
-
-        <div class="card console-card">
-            <h3>Консоль виведення програми</h3>
-            <div class="console-output" id="listConsole">Створіть перший вузол...</div>
-        </div>
-    </div>
-</div>
-<div id="lab-stack" class="lab-section">
+        <div id="lab-hash" class="lab-section">
             <header class="section-header">
-                <h2>Структура даних: Стек (Stack)</h2>
-                <p>Лабораторна робота №15. LIFO (Last In, First Out).</p>
+                <h2>Хеш-таблиці та колізії</h2>
+                <p>Лабораторні роботи №11-12. Порівняння методу ланцюжків та відкритої адресації (квадратичне пробування).</p>
             </header>
+
             <div class="workspace-grid" style="grid-template-columns: 1fr;">
                 <div class="card">
-                    <div style="display: flex; gap: 20px; align-items: flex-end;">
+                    <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-end;">
+                        <div>
+                            <p class="hint">Ключ (число):</p>
+                            <input type="number" id="hashKey" placeholder="Напр. 42" style="width: 100px; padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151;">
+                        </div>
+                        <div>
+                            <p class="hint">Значення (текст):</p>
+                            <input type="text" id="hashValue" placeholder="Дані..." style="width: 150px; padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151;">
+                        </div>
+                        
+                        <div class="controls">
+                            <button class="btn btn-primary" onclick="insertHash()">Вставити</button>
+                            <button class="btn btn-secondary" onclick="searchHash()">Знайти</button>
+                            <button class="btn btn-secondary" style="background-color: #ef4444;" onclick="removeHash()">Видалити</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h3>Візуалізація таблиць (Розмір: 11)</h3>
+                        <span id="collisionCounter" style="background: #ef4444; padding: 4px 10px; border-radius: 4px; font-size: 0.85rem;">Колізій: 0</span>
+                    </div>
+                    
+                    <div class="hash-headers">
+                        <div class="hash-header-col">Метод ланцюжків</div>
+                        <div class="hash-header-col">Відкрита адресація</div>
+                    </div>
+                    
+                    <div id="hashVisualizer" class="hash-container">
+                    </div>
+                </div>
+
+                <div class="card console-card">
+                    <h3>Консоль виведення</h3>
+                    <div class="console-output" id="hashConsole">Очікування команд...</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="lab-lists" class="lab-section">
+            <header class="section-header">
+                <h2>Робота зі зв'язними списками</h2>
+                <p>Лабораторні роботи №13-14. Однозв'язний, двозв'язний та кільцевий списки.</p>
+            </header>
+
+            <div class="workspace-grid" style="grid-template-columns: 1fr;">
+                <div class="card">
+                    <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-end;">
+                        <div>
+                            <p class="hint">Тип списку:</p>
+                            <select id="listType" style="padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151;" onchange="drawLists()">
+                                <option value="singly">Однозв'язний (ЛР 13)</option>
+                                <option value="doubly">Двозв'язний (ЛР 14)</option>
+                                <option value="circular">Кільцевий (ЛР 14)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <p class="hint">Значення:</p>
+                            <input type="number" id="listValue" placeholder="Напр. 10" style="width: 100px; padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151;">
+                        </div>
+                        
+                        <div class="controls">
+                            <button class="btn btn-primary" onclick="listInsert()">Додати вузол</button>
+                            <button class="btn btn-secondary" style="background-color: #ef4444;" onclick="listDelete()">Видалити</button>
+                            <button class="btn btn-secondary" style="background-color: #8b5cf6;" onclick="listReverse()" id="btnReverse">Реверс (Тільки однозв.)</button>
+                        </div>
+                    </div>
+                    <p class="hint" style="margin-top: 15px; color: #60a5fa;" id="listRulesHint">Правило: Однозв'язний додає в початок. Видалення за значенням.</p>
+                </div>
+
+                <div class="card">
+                    <h3>Візуалізація структури</h3>
+                    <div id="listVisualizer" class="list-container">
+                    </div>
+                </div>
+
+                <div class="card console-card">
+                    <h3>Консоль виведення програми</h3>
+                    <div class="console-output" id="listConsole">Створіть перший вузол...</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="lab-stack" class="lab-section">
+            <header class="section-header">
+                <h2>Структура даних: Стек (Stack)</h2>
+                <p>Лабораторна робота №15. Повна реалізація: LIFO, пошук, сума, збереження даних.</p>
+            </header>
+            
+            <div class="workspace-grid">
+                <div class="card">
+                    <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 20px;">
                         <div>
                             <p class="hint">Значення:</p>
                             <input type="number" id="stackValue" value="10" style="width: 100px; padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151;">
                         </div>
-                        <div class="controls">
-                            <button class="btn btn-primary" onclick="stackPush()">Push (Додати)</button>
-                            <button class="btn btn-secondary" style="background-color: #ef4444;" onclick="stackPop()">Pop (Вилучити)</button>
-                            <button class="btn btn-secondary" onclick="stackPeek()">Peek (Вершина)</button>
+                        <div class="controls" style="align-items: flex-end;">
+                            <button class="btn btn-primary" onclick="stackPush()">Push</button>
+                            <button class="btn btn-secondary" style="background-color: #ef4444;" onclick="stackPop()">Pop</button>
+                            <button class="btn btn-secondary" onclick="stackPeek()">Peek</button>
                         </div>
                     </div>
+                    
+                    <hr style="border-color: #374151; margin: 15px 0;">
+                    
+                    <p class="hint">Додаткові операції (ЛР 15):</p>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button class="btn btn-secondary" onclick="stackSearch()">Пошук</button>
+                        <button class="btn btn-secondary" onclick="stackSumAvg()">Сума / Середнє</button>
+                        <button class="btn btn-secondary" style="background-color: #10b981;" onclick="stackSave()">Зберегти</button>
+                        <button class="btn btn-secondary" style="background-color: #f59e0b;" onclick="stackLoad()">Завантажити</button>
+                    </div>
                 </div>
+
                 <div class="card" style="display: flex; justify-content: center;">
                     <div class="stack-visualizer" id="stackVisualizer">
-                        </div>
+                    </div>
+                </div>
+
+                <div class="card console-card" style="grid-column: 1 / -1;">
+                    <h3>Консоль виведення стеку</h3>
+                    <div class="console-output" id="stackConsole">Стек готовий до роботи...</div>
                 </div>
             </div>
         </div>
