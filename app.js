@@ -17,6 +17,7 @@ window.onload = function() {
     generateArray();
     generateSearchArray();
     initHashTables();
+    drawLists();
 };
 
 
