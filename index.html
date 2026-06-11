@@ -14,15 +14,14 @@
             <span class="group-badge">ІПЗ-22</span>
         </div>
         <nav class="sidebar-menu">
-            <a href="#" class="menu-item active" onclick="switchLab('lab-graphs')">ЛР 21-23: Графи & Алгоритми</a>
-            <a href="#" class="menu-item" onclick="switchLab('lab-sort')">ЛР 1-8: Сортування</a>
+            <a href="#" class="menu-item active" onclick="switchLab('lab-sort')">ЛР 1-8: Сортування</a>
             <a href="#" class="menu-item" onclick="switchLab('lab-search')">ЛР 9-10: Пошук</a>
             <a href="#" class="menu-item" onclick="switchLab('lab-hash')">ЛР 11-12: Хеш-таблиці</a>
             <a href="#" class="menu-item" onclick="switchLab('lab-lists')">ЛР 13-14: Зв'язні списки</a>
             <a href="#" class="menu-item" onclick="switchLab('lab-stack')">ЛР 15: Стек (Stack)</a>
             <a href="#" class="menu-item" onclick="switchLab('lab-queues')">ЛР 16-17: Черги та Дек</a>
             <a href="#" class="menu-item" onclick="switchLab('lab-trees')">ЛР 18-20: Дерева (Trees)</a>
-            
+            <a href="#" class="menu-item" onclick="switchLab('lab-graphs')">ЛР 21-23: Графи & Алгоритми</a>
             <a href="#" class="menu-item" onclick="switchLab('lab-topo')">ЛР 24: Топологічне сорт.</a>
             <a href="#" class="menu-item" onclick="switchLab('lab-adv-graphs')">ЛР 26-30: Складні Графи</a>
         </nav>
@@ -30,51 +29,13 @@
 
     <main class="main-content">
         
-        <div id="lab-graphs" class="lab-section active">
-            <header class="section-header">
-                <h2>Динамічний аналіз та візуалізація графів</h2>
-                <p>Лабораторні роботи №21, №22, №23</p>
-            </header>
-
-            <div class="workspace-grid">
-                <div class="card">
-                    <h3>Матриця суміжності (5x5)</h3>
-                    <p class="hint">Змінюй вагу ребер прямо в полях:</p>
-                    <div class="matrix-container" id="matrixInputs"></div>
-                    <div class="controls">
-                        <button class="btn btn-secondary" onclick="analyzeGraph()">Аналіз (ЛР21)</button>
-                        <button class="btn btn-primary" onclick="runDFS()">DFS (ЛР22)</button>
-                        <button class="btn btn-primary" style="background-color: #8b5cf6;" onclick="runBFS()">BFS (ЛР23)</button>
-                    </div>
-                </div>
-
-                <div class="card visualizer-card">
-                    <h3>Графічна візуалізація графа</h3>
-                    <div class="canvas-wrapper">
-                        <canvas id="graphCanvas" width="400" height="400"></canvas>
-                    </div>
-                    <div class="legend">
-                        <span class="legend-item"><span class="dot active"></span> Активна</span>
-                        <span class="legend-item"><span class="dot visited"></span> Відвідана</span>
-                        <span class="legend-item"><span class="dot unvisited"></span> Не відвідана</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card console-card">
-                <h3>Консоль виведення програми</h3>
-                <div class="console-output" id="consoleOutput">Оберіть дію для запуску алгоритмів...</div>
-            </div>
-        </div>
-
-        <div id="lab-sort" class="lab-section">
+        <div id="lab-sort" class="lab-section active">
             <header class="section-header">
                 <h2>Алгоритми сортування масивів</h2>
                 <p>Лабораторні роботи №1-8. Візуалізація алгоритмів у реальному часі.</p>
             </header>
 
             <div class="workspace-grid" style="grid-template-columns: 1fr;">
-                
                 <div class="card">
                     <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-end;">
                         <div>
@@ -164,7 +125,7 @@
         <div id="lab-hash" class="lab-section">
             <header class="section-header">
                 <h2>Хеш-таблиці та колізії</h2>
-                <p>Лабораторні роботи №11-12. Порівняння методу ланцюжків та відкритої адресації (квадратичне пробування).</p>
+                <p>Лабораторні роботи №11-12. Порівняння методу ланцюжків та відкритої адресації.</p>
             </header>
 
             <div class="workspace-grid" style="grid-template-columns: 1fr;">
@@ -401,59 +362,45 @@
                 </div>
             </div>
         </div>
-    <div id="lab-adv-graphs" class="lab-section">
-    <header class="section-header">
-        <h2>Складні алгоритми на графах</h2>
-        <p>Лабораторні роботи №26-30. Пріма, Дейкстра, Беллман-Форд, Флойд-Воршалл.</p>
-    </header>
 
-   <div class="workspace-grid" style="grid-template-columns: 1fr;">
-        <div class="card">
-            <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start;">
-                <div style="flex: 1; min-width: 250px;">
-                    <p class="hint">Матриця ваг (0 = немає ребра):</p>
-                    <textarea id="advGraphMatrix" style="width: 100%; height: 160px; background: #1f2937; color: white; border: 1px solid #374151; padding: 10px; border-radius: 6px; font-family: monospace; resize: vertical;">0, 2, 2, 0, 0, 0
-0, 0, 0, 2, 3, 0
-0, 0, 0, 0, 2, 0
-0, 0, 0, 0, 0, 2
-0, 0, 0, 0, 0, 1
-0, 0, 0, 0, 0, 0</textarea>
-                </div>
-                
-                <div style="flex: 1; min-width: 150px;">
-                    <p class="hint">Координати X, Y для A* (ЛР 30):</p>
-                    <textarea id="astarCoords" style="width: 100%; height: 160px; background: #1f2937; color: white; border: 1px solid #374151; padding: 10px; border-radius: 6px; font-family: monospace; resize: vertical;">0.0, 3.0
-2.0, 5.0
-2.0, 1.0
-5.0, 5.0
-5.0, 1.0
-8.0, 3.0</textarea>
+        <div id="lab-graphs" class="lab-section">
+            <header class="section-header">
+                <h2>Динамічний аналіз та візуалізація графів</h2>
+                <p>Лабораторні роботи №21, №22, №23</p>
+            </header>
+
+            <div class="workspace-grid">
+                <div class="card">
+                    <h3>Матриця суміжності (5x5)</h3>
+                    <p class="hint">Змінюй вагу ребер прямо в полях:</p>
+                    <div class="matrix-container" id="matrixInputs"></div>
+                    <div class="controls">
+                        <button class="btn btn-secondary" onclick="analyzeGraph()">Аналіз (ЛР21)</button>
+                        <button class="btn btn-primary" onclick="runDFS()">DFS (ЛР22)</button>
+                        <button class="btn btn-primary" style="background-color: #8b5cf6;" onclick="runBFS()">BFS (ЛР23)</button>
+                    </div>
                 </div>
 
-                <div style="min-width: 150px;">
-                    <p class="hint">Старт (від 1):</p>
-                    <input type="number" id="advStartNode" value="1" style="width: 80px; padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151; margin-bottom: 15px;">
-                    
-                    <p class="hint">Ціль (від 1):</p>
-                    <input type="number" id="advEndNode" value="6" style="width: 80px; padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151;">
+                <div class="card visualizer-card">
+                    <h3>Графічна візуалізація графа</h3>
+                    <div class="canvas-wrapper">
+                        <canvas id="graphCanvas" width="400" height="400"></canvas>
+                    </div>
+                    <div class="legend">
+                        <span class="legend-item"><span class="dot active"></span> Активна</span>
+                        <span class="legend-item"><span class="dot visited"></span> Відвідана</span>
+                        <span class="legend-item"><span class="dot unvisited"></span> Не відвідана</span>
+                    </div>
                 </div>
             </div>
-            
-            <div class="controls" style="margin-top: 20px; flex-wrap: wrap;">
-                <button class="btn btn-primary" onclick="runPrimJS()">Пріма (ЛР 26)</button>
-                <button class="btn btn-secondary" onclick="runDijkstraJS()">Дейкстра (ЛР 27)</button>
-                <button class="btn btn-secondary" onclick="runBellmanFordJS()">Беллман-Форд (ЛР 28)</button>
-                <button class="btn btn-secondary" style="background-color: #8b5cf6;" onclick="runFloydWarshallJS()">Флойд-Воршалл (ЛР 29)</button>
-                <button class="btn btn-primary" style="background-color: #f59e0b;" onclick="runAStarJS()">A* Algorithm (ЛР 30)</button>
+
+            <div class="card console-card">
+                <h3>Консоль виведення програми</h3>
+                <div class="console-output" id="consoleOutput">Оберіть дію для запуску алгоритмів...</div>
             </div>
         </div>
 
-        <div class="card console-card">
-            <h3>Консоль виведення алгоритмів</h3>
-            <div class="console-output" id="advGraphConsole" style="min-height: 300px; max-height: 500px;">Очікування запуску...</div>
-        </div>
-    </div>
-    <div id="lab-topo" class="lab-section">
+        <div id="lab-topo" class="lab-section">
             <header class="section-header">
                 <h2>Топологічне сортування графів</h2>
                 <p>Лабораторна робота №24. Алгоритм Кана з перевіркою на наявність циклів.</p>
@@ -490,8 +437,62 @@
             </div>
         </div>
 
+        <div id="lab-adv-graphs" class="lab-section">
+            <header class="section-header">
+                <h2>Складні алгоритми на графах</h2>
+                <p>Лабораторні роботи №26-30. Пріма, Дейкстра, Беллман-Форд, Флойд-Воршалл.</p>
+            </header>
+
+            <div class="workspace-grid" style="grid-template-columns: 1fr;">
+                <div class="card">
+                    <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start;">
+                        <div style="flex: 1; min-width: 250px;">
+                            <p class="hint">Матриця ваг (0 = немає ребра):</p>
+                            <textarea id="advGraphMatrix" style="width: 100%; height: 160px; background: #1f2937; color: white; border: 1px solid #374151; padding: 10px; border-radius: 6px; font-family: monospace; resize: vertical;">0, 2, 2, 0, 0, 0
+0, 0, 0, 2, 3, 0
+0, 0, 0, 0, 2, 0
+0, 0, 0, 0, 0, 2
+0, 0, 0, 0, 0, 1
+0, 0, 0, 0, 0, 0</textarea>
+                        </div>
+                        
+                        <div style="flex: 1; min-width: 150px;">
+                            <p class="hint">Координати X, Y для A* (ЛР 30):</p>
+                            <textarea id="astarCoords" style="width: 100%; height: 160px; background: #1f2937; color: white; border: 1px solid #374151; padding: 10px; border-radius: 6px; font-family: monospace; resize: vertical;">0.0, 3.0
+2.0, 5.0
+2.0, 1.0
+5.0, 5.0
+5.0, 1.0
+8.0, 3.0</textarea>
+                        </div>
+
+                        <div style="min-width: 150px;">
+                            <p class="hint">Старт (від 1):</p>
+                            <input type="number" id="advStartNode" value="1" style="width: 80px; padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151; margin-bottom: 15px;">
+                            
+                            <p class="hint">Ціль (від 1):</p>
+                            <input type="number" id="advEndNode" value="6" style="width: 80px; padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151;">
+                        </div>
+                    </div>
+                    
+                    <div class="controls" style="margin-top: 20px; flex-wrap: wrap;">
+                        <button class="btn btn-primary" onclick="runPrimJS()">Пріма (ЛР 26)</button>
+                        <button class="btn btn-secondary" onclick="runDijkstraJS()">Дейкстра (ЛР 27)</button>
+                        <button class="btn btn-secondary" onclick="runBellmanFordJS()">Беллман-Форд (ЛР 28)</button>
+                        <button class="btn btn-secondary" style="background-color: #8b5cf6;" onclick="runFloydWarshallJS()">Флойд-Воршалл (ЛР 29)</button>
+                        <button class="btn btn-primary" style="background-color: #f59e0b;" onclick="runAStarJS()">A* Algorithm (ЛР 30)</button>
+                    </div>
+                </div>
+
+                <div class="card console-card">
+                    <h3>Консоль виведення алгоритмів</h3>
+                    <div class="console-output" id="advGraphConsole" style="min-height: 300px; max-height: 500px;">Очікування запуску...</div>
+                </div>
+            </div>
+        </div>
+
     </main>
 
-    <script src="app.js?v=3"></script>
+    <script src="app.js?v=4"></script>
 </body>
 </html>
