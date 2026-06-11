@@ -170,3 +170,42 @@ body {
     font-weight: bold; border: 2px solid #047857;
 }
 .queue-item small { font-size: 0.7rem; color: #d1fae5; }
+/* ==========================================
+   ДОДАТКОВІ СТИЛІ ДЛЯ ВІЗУАЛІЗАЦІЙ
+   ========================================== */
+
+/* --- ПОШУК (ЛР 9-10) --- */
+.search-container { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; padding: 20px; }
+.search-cell { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background-color: #1f2937; border: 1px solid var(--border); border-radius: 6px; font-weight: bold; transition: 0.3s; }
+.search-cell.dimmed { opacity: 0.4; }
+.search-cell.active-zone { border-color: #3b82f6; }
+.search-cell.current { background-color: #f59e0b; color: #000; transform: scale(1.1); }
+.search-cell.mid { background-color: #a855f7; color: #fff; }
+.search-cell.found { background-color: #10b981; color: #fff; border-color: #10b981; box-shadow: 0 0 10px #10b981; }
+.search-cell.barrier { border: 2px dashed #ef4444; color: #ef4444; }
+
+/* --- ХЕШ-ТАБЛИЦІ (ЛР 11-12) --- */
+.hash-headers { display: grid; grid-template-columns: 60px 1fr 1fr; gap: 15px; padding-bottom: 10px; border-bottom: 1px solid var(--border); font-weight: bold; text-align: center; color: var(--text-muted); }
+.hash-headers::before { content: 'Індекс'; display: block; } /* Фікс для першої колонки без зміни HTML */
+.hash-row { display: grid; grid-template-columns: 60px 1fr 1fr; gap: 15px; padding: 10px 0; border-bottom: 1px solid #1f2937; align-items: center; }
+.hash-index { font-weight: bold; color: var(--accent); text-align: center; }
+.hash-chain-area, .hash-open-area { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; padding: 8px; background: #1f2937; border-radius: 6px; border: 1px solid var(--border); min-height: 42px; align-items: center; }
+.hash-chain-item { background: #374151; padding: 4px 8px; border-radius: 4px; font-size: 0.85rem; }
+.hash-open-area.used { background-color: rgba(59, 130, 246, 0.15); border-color: #3b82f6; }
+.hash-open-area.deleted { background-color: rgba(239, 68, 68, 0.1); color: #ef4444; font-style: italic; }
+
+/* --- ЗВ'ЯЗНІ СПИСКИ (ЛР 13-14) --- */
+.list-container { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 20px; background: #0b0f19; border-radius: 8px; border: 1px solid var(--border); min-height: 100px; justify-content: center; }
+.list-node { background: #3b82f6; color: white; padding: 10px 20px; border-radius: 6px; font-weight: bold; border: 2px solid #2563eb; }
+.list-arrow { color: var(--text-muted); font-weight: bold; font-size: 1.2rem; }
+.list-null { color: #6b7280; font-family: monospace; font-weight: bold; padding: 10px; border: 1px dashed #4b5563; border-radius: 6px; }
+.list-head-label { color: #10b981; font-weight: bold; }
+
+/* --- СТЕК (ЛР 15) --- */
+.stack-visualizer { display: flex; flex-direction: column-reverse; align-items: center; gap: 5px; width: 120px; padding: 10px; background: #0b0f19; border: 2px solid var(--border); border-top: none; border-radius: 0 0 8px 8px; min-height: 250px; justify-content: flex-start; }
+.stack-item { width: 100%; padding: 10px; text-align: center; background: #8b5cf6; color: white; font-weight: bold; border-radius: 4px; border-bottom: 3px solid #7c3aed; }
+
+/* --- ЧЕРГИ ТА ДЕК (ЛР 16-17) --- */
+.queue-container { display: flex; gap: 10px; padding: 20px; background: #0b0f19; border-radius: 8px; border: 1px solid var(--border); min-height: 100px; overflow-x: auto; align-items: center; justify-content: flex-start; }
+.queue-item { background: #3b82f6; color: white; padding: 10px 20px; border-radius: 6px; font-weight: bold; border-bottom: 3px solid #2563eb; display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 60px; text-align: center; }
+.queue-item small { font-size: 0.75rem; opacity: 0.8; font-weight: normal; }
