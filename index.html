@@ -22,6 +22,8 @@
             <a href="#" class="menu-item" onclick="switchLab('lab-stack')">ЛР 15: Стек (Stack)</a>
             <a href="#" class="menu-item" onclick="switchLab('lab-queues')">ЛР 16-17: Черги та Дек</a>
             <a href="#" class="menu-item" onclick="switchLab('lab-trees')">ЛР 18-20: Дерева (Trees)</a>
+            
+            <a href="#" class="menu-item" onclick="switchLab('lab-topo')">ЛР 24: Топологічне сорт.</a>
             <a href="#" class="menu-item" onclick="switchLab('lab-adv-graphs')">ЛР 26-30: Складні Графи</a>
         </nav>
     </aside>
@@ -451,6 +453,42 @@
             <div class="console-output" id="advGraphConsole" style="min-height: 300px; max-height: 500px;">Очікування запуску...</div>
         </div>
     </div>
+    <div id="lab-topo" class="lab-section">
+            <header class="section-header">
+                <h2>Топологічне сортування графів</h2>
+                <p>Лабораторна робота №24. Алгоритм Кана з перевіркою на наявність циклів.</p>
+            </header>
+
+            <div class="workspace-grid" style="grid-template-columns: 1fr;">
+                <div class="card">
+                    <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start;">
+                        <div>
+                            <p class="hint">Кількість вершин (n):</p>
+                            <input type="number" id="topoNodes" value="6" min="1" style="width: 100px; padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151; margin-bottom: 15px;">
+                        </div>
+                        
+                        <div style="flex: 1; min-width: 250px;">
+                            <p class="hint">Список ребер (кожна лінія: u v):</p>
+                            <textarea id="topoEdges" style="width: 100%; height: 160px; background: #1f2937; color: white; border: 1px solid #374151; padding: 10px; border-radius: 6px; font-family: monospace; resize: vertical;">5 2
+5 0
+4 0
+4 1
+2 3
+3 1</textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="controls" style="margin-top: 20px;">
+                        <button class="btn btn-primary" onclick="runKahnJS()">Сортувати (Алгоритм Кана)</button>
+                    </div>
+                </div>
+
+                <div class="card console-card">
+                    <h3>Консоль виведення</h3>
+                    <div class="console-output" id="topoConsole" style="min-height: 250px;">Очікування графа...</div>
+                </div>
+            </div>
+        </div>
 
     </main>
 
