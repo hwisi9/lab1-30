@@ -173,11 +173,42 @@ let currentArray = [];
 let isSorting = false;
 let ANIMATION_SPEED = 40;
 
+// Парсимо числа з текстового поля
+function parseArrayInput() {
+    const raw = document.getElementById('arrValues').value;
+    return raw.split(',').map(x => parseInt(x.trim())).filter(x => !isNaN(x));
+}
+
+// Оновлюємо візуалізацію, коли юзер пише числа вручну
+function updateArrayFromInput() {
+    if (isSorting) return;
+    let arr = parseArrayInput();
+    if (arr.length === 0) arr = [10]; // Захист від порожнього поля
+    currentArray = arr;
+    drawArray(currentArray);
+}
+
+// Викликається при старті сторінки
 function generateArray() {
     if (isSorting) return;
-    const size = parseInt(document.getElementById('arrSize').value) || 20;
+    updateArrayFromInput();
+}
+
+// Кнопка "Рандом"
+function generateRandomArray() {
+    if (isSorting) return;
     currentArray = [];
+    const size = Math.floor(Math.random() * 15) + 10; // Випадковий розмір від 10 до 25
     for (let i = 0; i < size; i++) currentArray.push(Math.floor(Math.random() * 90) + 10);
+    document.getElementById('arrValues').value = currentArray.join(', ');
+    drawArray(currentArray);
+}
+
+// Кнопка "Стандарт"
+function resetArray() {
+    if (isSorting) return;
+    currentArray = [42, 15, 77, 8, 99, 23, 15, 4, 61, 35];
+    document.getElementById('arrValues').value = currentArray.join(', ');
     drawArray(currentArray);
 }
 
@@ -201,6 +232,7 @@ async function startSorting() {
     if (isSorting || currentArray.length === 0) return;
     isSorting = true;
     document.getElementById('sortBtn').disabled = true;
+    document.getElementById('arrValues').disabled = true; // Блокуємо ввід на час сортування
     
     const algo = document.getElementById('algoSelect').value;
     const asc = document.getElementById('sortOrder').value === 'asc';
@@ -220,7 +252,13 @@ async function startSorting() {
     }
     
     drawArray(arr, [], [...Array(arr.length).keys()]); 
-    setTimeout(() => { drawArray(arr); isSorting = false; document.getElementById('sortBtn').disabled = false; }, 1000);
+    setTimeout(() => { 
+        drawArray(arr); 
+        isSorting = false; 
+        document.getElementById('sortBtn').disabled = false; 
+        document.getElementById('arrValues').disabled = false; // Розблоковуємо ввід
+        document.getElementById('arrValues').value = arr.join(', '); // Записуємо відсортований результат назад у поле
+    }, 1000);
     currentArray = arr; 
 }
 
