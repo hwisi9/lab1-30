@@ -35,13 +35,13 @@
                 <p>Лабораторні роботи №1-8. Візуалізація алгоритмів у реальному часі.</p>
             </header>
 
-            <div class="workspace-grid" style="grid-template-columns: 1fr;">
-                <div class="card">
+           <div class="card">
                     <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-end;">
-                        <div>
-                            <p class="hint">Елементів (5-50):</p>
-                            <input type="number" id="arrSize" value="20" min="5" max="50" style="width: 80px; padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151;">
+                        <div style="flex: 1; min-width: 250px;">
+                            <p class="hint">Масив для сортування (через кому):</p>
+                            <input type="text" id="arrValues" value="42, 15, 77, 8, 99, 23, 15, 4, 61, 35" style="width: 100%; padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151;" oninput="updateArrayFromInput()">
                         </div>
+                        
                         <div>
                             <p class="hint">Алгоритм:</p>
                             <select id="algoSelect" style="padding: 8px; border-radius: 4px; background: #1f2937; color: white; border: 1px solid #374151;">
@@ -64,8 +64,9 @@
                         </div>
                         
                         <div class="controls">
-                            <button class="btn btn-secondary" onclick="generateArray()">Новий масив</button>
-                            <button class="btn btn-primary" id="sortBtn" onclick="startSorting()">Запустити сортування</button>
+                            <button class="btn btn-secondary" onclick="generateRandomArray()">Рандом</button>
+                            <button class="btn btn-secondary" onclick="resetArray()">Стандарт</button>
+                            <button class="btn btn-primary" id="sortBtn" onclick="startSorting()">Запустити</button>
                         </div>
                     </div>
                 </div>
