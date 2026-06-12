@@ -173,38 +173,33 @@ let currentArray = [];
 let isSorting = false;
 let ANIMATION_SPEED = 40;
 
-// Парсимо числа з текстового поля
 function parseArrayInput() {
     const raw = document.getElementById('arrValues').value;
     return raw.split(',').map(x => parseInt(x.trim())).filter(x => !isNaN(x));
 }
 
-// Оновлюємо візуалізацію, коли юзер пише числа вручну
 function updateArrayFromInput() {
     if (isSorting) return;
     let arr = parseArrayInput();
-    if (arr.length === 0) arr = [10]; // Захист від порожнього поля
+    if (arr.length === 0) arr = [10]; 
     currentArray = arr;
     drawArray(currentArray);
 }
 
-// Викликається при старті сторінки
 function generateArray() {
     if (isSorting) return;
     updateArrayFromInput();
 }
 
-// Кнопка "Рандом"
 function generateRandomArray() {
     if (isSorting) return;
     currentArray = [];
-    const size = Math.floor(Math.random() * 15) + 10; // Випадковий розмір від 10 до 25
+    const size = Math.floor(Math.random() * 15) + 10; 
     for (let i = 0; i < size; i++) currentArray.push(Math.floor(Math.random() * 90) + 10);
     document.getElementById('arrValues').value = currentArray.join(', ');
     drawArray(currentArray);
 }
 
-// Кнопка "Стандарт"
 function resetArray() {
     if (isSorting) return;
     currentArray = [42, 15, 77, 8, 99, 23, 15, 4, 61, 35];
@@ -232,7 +227,7 @@ async function startSorting() {
     if (isSorting || currentArray.length === 0) return;
     isSorting = true;
     document.getElementById('sortBtn').disabled = true;
-    document.getElementById('arrValues').disabled = true; // Блокуємо ввід на час сортування
+    document.getElementById('arrValues').disabled = true; 
     
     const algo = document.getElementById('algoSelect').value;
     const asc = document.getElementById('sortOrder').value === 'asc';
@@ -256,8 +251,8 @@ async function startSorting() {
         drawArray(arr); 
         isSorting = false; 
         document.getElementById('sortBtn').disabled = false; 
-        document.getElementById('arrValues').disabled = false; // Розблоковуємо ввід
-        document.getElementById('arrValues').value = arr.join(', '); // Записуємо відсортований результат назад у поле
+        document.getElementById('arrValues').disabled = false; 
+        document.getElementById('arrValues').value = arr.join(', '); 
     }, 1000);
     currentArray = arr; 
 }
@@ -1369,7 +1364,7 @@ function runPrimJS() {
         if (u === -1) break;
 
         inMST[u] = true;
-        if (parent[u] !== -1) totalWeight += g[u][parent[u]];
+        if (parent[u] !== -1) totalWeight += g[parent[u]][u]; // Виправлений рядок
 
         let rowStr = `  ${step+1}  | v${u+1}(${key[u] === INF ? '∞' : key[u]}) | `;
         for (let v = 0; v < n; v++) {
@@ -1390,7 +1385,7 @@ function runPrimJS() {
     logAdvGraph("\nМінімальний кістяк:");
     for (let i = 1; i < n; i++) {
         if (parent[i] !== -1) {
-            logAdvGraph(` v${parent[i]+1} -- v${i+1} (вага: ${g[i][parent[i]]})`);
+            logAdvGraph(` v${parent[i]+1} -- v${i+1} (вага: ${g[parent[i]][i]})`); // Виправлений рядок
         }
     }
     logAdvGraph(`Загальна вага MST: ${totalWeight}`);
@@ -1659,14 +1654,12 @@ function runKahnJS() {
         return;
     }
 
-    // Зчитуємо сирий текст і розбиваємо на рядки
     let edgesRaw = document.getElementById('topoEdges').value.trim().split('\n');
     let graph = Array.from({length: n}, () => []);
     let inDegree = new Array(n).fill(0);
 
     logTopo(`=== ЛР 24: Топологічне сортування (Алгоритм Кана) ===`, true);
 
-    // Парсимо ребра
     for (let line of edgesRaw) {
         if (!line.trim()) continue;
         let parts = line.trim().split(/\s+/).map(Number);
@@ -1688,11 +1681,9 @@ function runKahnJS() {
     }
     logTopo("-".repeat(40));
 
-    // Реалізація Алгоритму Кана
     let q = [];
     let order = [];
 
-    // 1. Додаємо в чергу всі вершини, які не мають вхідних ребер (inDegree == 0)
     for (let i = 0; i < n; i++) {
         if (inDegree[i] === 0) {
             q.push(i);
@@ -1701,13 +1692,11 @@ function runKahnJS() {
 
     let count = 0;
     
-    // 2. Основний цикл обробки черги
     while (q.length > 0) {
-        let u = q.shift(); // Витягуємо перший елемент (як q.front() + q.pop() у С++)
+        let u = q.shift(); 
         order.push(u);
         count++;
 
-        // Зменшуємо вхідний ступінь для всіх суміжних вершин
         for (let v of graph[u]) {
             inDegree[v]--;
             if (inDegree[v] === 0) {
@@ -1716,7 +1705,6 @@ function runKahnJS() {
         }
     }
 
-    // 3. Перевірка на цикл
     if (count !== n) {
         logTopo("\n[!] Помилка: виявлено цикл! Топологічне сортування неможливе.");
     } else {
